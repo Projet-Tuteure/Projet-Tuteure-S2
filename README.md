@@ -24,5 +24,5 @@ Tant que fenêtre ouverte (boucle principale) :
       getInput();  
       nouvellePartie.refresh(gauche,droite,haut,bas);  
     afficher "Game Over"+bouton menu  
-    COUCOU
+    COUCOU c'est aurélien
 ```
