@@ -25,4 +25,6 @@ Tant que fenêtre ouverte (boucle principale) :
       nouvellePartie.refresh(gauche,droite,haut,bas);  
     afficher "Game Over"+bouton menu  
     COUCOU c'est aurélien
+	coucou de thomas
+
 ```
