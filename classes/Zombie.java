@@ -1,6 +1,6 @@
 public class Zombie {
   int posX;
-  int poxY;
+  int posY;
 
   Zombie(int initX, int initY){
     this.posX=initX;
@@ -8,10 +8,10 @@ public class Zombie {
   }
 
   public void setPosition(){
-    ...
+
   }
 
   public String getPosition(){
-    ...
+
   }
 }
