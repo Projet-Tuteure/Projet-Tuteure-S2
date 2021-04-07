@@ -1,0 +1,22 @@
+{
+  "vendor" : "Amazon",
+  "product" : "Corretto",
+  "jdk_version_major" : 11,
+  "jdk_version" : "11.0.10",
+  "suggested_sdk_name" : "corretto-11",
+  "shared_index_aliases" : [ "corretto-11.0.10", "corretto-11", "11.0.10", "11" ],
+  "packages" : [ {
+    "os" : "linux",
+    "arch" : "x86_64",
+    "url" : "https://corretto.aws/downloads/resources/11.0.10.9.1/amazon-corretto-11.0.10.9.1-linux-x64.tar.gz",
+    "package_type" : "targz",
+    "unpack_prefix_filter" : "amazon-corretto-11.0.10.9.1-linux-x64",
+    "package_root_prefix" : "amazon-corretto-11.0.10.9.1-linux-x64",
+    "package_to_java_home_prefix" : "",
+    "archive_file_name" : "amazon-corretto-11.0.10.9.1-linux-x64.tar.gz",
+    "install_folder_name" : "corretto-11.0.10",
+    "archive_size" : 193731865,
+    "unpacked_size" : 323839805,
+    "sha256" : "bf9380ee0cdd78fafb6d0cdfa0c1a97baaaec44432a15c8c2f296696ad9ed631"
+  } ]
+}
