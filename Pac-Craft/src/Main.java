@@ -22,7 +22,7 @@ public class Main extends Application {
     public void start(Stage stage) throws InterruptedException {
         gameOver= false;
         // Tilemap tilemap = new Tilemap(0);
-        Tilemap tilemap = new Tilemap(1);
+        Tilemap tilemap = new Tilemap(0,1);
         Personnage Steve = new Personnage();
         //Setting the Scene object
         Group root = new Group(tilemap.getCanvas());
@@ -31,6 +31,7 @@ public class Main extends Application {
         stage.getIcons().add(new Image("img/icon.png"));
         stage.setResizable(false);
         stage.setScene(scene);
+
 
         // mainLoop(Steve,tilemap);
 
@@ -46,6 +47,8 @@ public class Main extends Application {
 
                 tilemap.display(tilemap.map, Steve.steveIcon, Steve.pos_x, Steve.pos_y);
                 Steve.deplacement(gauche, droite, haut, bas);
+                Collision.getPiece(tilemap,Steve);
+                Collision.getGoldApple(tilemap,Steve);
             }
         }.start();
 
