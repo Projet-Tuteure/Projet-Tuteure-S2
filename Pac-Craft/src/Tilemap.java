@@ -57,21 +57,22 @@ public class Tilemap {
     GraphicsContext graphicsContext;
     Image[] pattern = new Image[nbTexture];
     int[][] map;
-    ArrayList<String> floorBlocks = new ArrayList<String>();
+    ArrayList<Integer> floorBlocks = new ArrayList<Integer>();
 
 
-    Tilemap(int nMap,int numNiveau) {
+    Tilemap(int nMap) {
         this.map = listeNiveaux[nMap];
         this.nbBlockWidth = listeNiveaux[nMap][0].length;
         this.nbBlockHeight = listeNiveaux[nMap].length;
         //System.out.println(nbBlockHeight+","+nbBlockWidth);
         this.canvas = new Canvas(BLOCKSIDE * nbBlockWidth, BLOCKSIDE * nbBlockHeight);
         this.graphicsContext = canvas.getGraphicsContext2D();
-        this.niveauCourant = numNiveau;
+        this.niveauCourant = nMap;
         loadImages(this.pattern);
-        floorBlocks.add("0");
-        floorBlocks.add("2");
-        floorBlocks.add("3");
+        //Initialisation de la liste de blocks sur lesquels on peut marcher
+        floorBlocks.add(0);
+        floorBlocks.add(2);
+        floorBlocks.add(3);
     }
 
     public void loadImages(Image[] tableauImage){
@@ -106,6 +107,29 @@ public class Tilemap {
     }
 
     public int getValueOf(int x ,int y){ return listeNiveaux[this.niveauCourant][x][y];}
+
+    public int getTileX(int x){
+        return x/BLOCKSIDE;
+    }
+
+    public int getTileY(int y){
+        return y/BLOCKSIDE;
+    }
+
+    public int getTileFromXYTile(int xTile, int yTile){
+        return this.listeNiveaux[this.niveauCourant][yTile][xTile];
+    }
+
+    public int getTileFromXY(int x, int y){
+        return getTileFromXYTile(getTileX(x),getTileY(y));
+    }
+
+    public boolean isCenter(int x, int y){
+        if (x%(BLOCKSIDE/2)==0 && y%(BLOCKSIDE/2)==0 && x%BLOCKSIDE!=0 && y%BLOCKSIDE!=0){
+            return true;
+        }
+        return false;
+    }
 
     public int getNumberOfCoin(){
         int compteur =0;

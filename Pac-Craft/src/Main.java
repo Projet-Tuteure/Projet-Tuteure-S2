@@ -21,8 +21,7 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) throws InterruptedException {
         gameOver= false;
-        // Tilemap tilemap = new Tilemap(0);
-        Tilemap tilemap = new Tilemap(0,1);
+        Tilemap tilemap = new Tilemap(0);
         Personnage Steve = new Personnage();
         //Setting the Scene object
         Group root = new Group(tilemap.getCanvas());
@@ -45,10 +44,15 @@ public class Main extends Application {
 
                 int j = 0;
 
-                tilemap.display(tilemap.map, Steve.steveIcon, Steve.pos_x, Steve.pos_y);
-                Steve.deplacement(gauche, droite, haut, bas);
+                tilemap.display(tilemap.map, Steve.steveIcon, Steve.posX, Steve.posY);
+                Steve.deplacement(tilemap);
                 Collision.getPiece(tilemap,Steve);
                 Collision.getGoldApple(tilemap,Steve);
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         }.start();
 
@@ -58,10 +62,10 @@ public class Main extends Application {
             @Override
             public void handle(KeyEvent event) {
                 switch (event.getCode()) {
-                    case UP:    Collision.collide(Steve.pos_x, Steve.pos_y,tilemap,2,Steve); break;
-                    case DOWN:  Collision.collide(Steve.pos_x, Steve.pos_y,tilemap,3,Steve); break;
-                    case LEFT:  Collision.collide(Steve.pos_x, Steve.pos_y,tilemap,0,Steve); break;
-                    case RIGHT: Collision.collide(Steve.pos_x, Steve.pos_y,tilemap,1,Steve); break;
+                    case UP:    Steve.setNewDirection(Personnage.Direction.HAUT); break;
+                    case DOWN:  Steve.setNewDirection(Personnage.Direction.BAS); break;
+                    case LEFT:  Steve.setNewDirection(Personnage.Direction.GAUCHE); break;
+                    case RIGHT: Steve.setNewDirection(Personnage.Direction.DROITE); break;
                     case P: gameOver = true; break;
                     // case SHIFT: running = true; break;
                 }
