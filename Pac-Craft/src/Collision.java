@@ -6,13 +6,13 @@ public class Collision {
      * @param tilemap
      * @param personnage
      */
-    public static void getPiece(Tilemap tilemap,Personnage personnage){
+    public static void getPiece(Tilemap tilemap,Player personnage){
         int xIndex = tilemap.getTileX(personnage.getCenterPosX());
         int yIndex = tilemap.getTileY(personnage.getCenterPosY());
         if(tilemap.getTileFromXYTile(xIndex, yIndex)==2){
             tilemap.listeNiveaux[tilemap.niveauCourant][yIndex][xIndex]=0;
-            personnage.nbPiece += 1;
-            System.out.println("TU AS "+ personnage.nbPiece+" pièces chacal");
+            personnage.addPiece();
+            System.out.println("TU AS "+ personnage.getNbPiece()+" pièces chacal");
         }
     }
 
@@ -22,12 +22,11 @@ public class Collision {
      * @param tilemap
      * @param personnage
      */
-    public static void getGoldApple(Tilemap tilemap,Personnage personnage){
+    public static void getGoldApple(Tilemap tilemap,Player personnage){
         int xIndex = tilemap.getTileX(personnage.getCenterPosX());
         int yIndex = tilemap.getTileY(personnage.getCenterPosY());
         if(tilemap.getTileFromXYTile(xIndex, yIndex)==3){
             tilemap.listeNiveaux[tilemap.niveauCourant][yIndex][xIndex]=0;
-            personnage.nbPiece += 1;
             System.out.println("TU es invincible !");
         }
     }
@@ -39,7 +38,7 @@ public class Collision {
      * @param tilemap
      * @return
      */
-    public static boolean notCollidingWithWalls(Personnage personnage, Tilemap tilemap){
+    public static boolean notCollidingWithWalls(Sprite personnage, Tilemap tilemap){
         switch (personnage.newDirection){
             case HAUT:
                 if (tilemap.floorBlocks.contains(tilemap.getTileFromXY(personnage.getCenterPosX(), personnage.getCenterPosY()-tilemap.BLOCKSIDE))){

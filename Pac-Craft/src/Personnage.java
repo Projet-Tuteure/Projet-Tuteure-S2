@@ -1,5 +1,6 @@
 
 
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
 
@@ -12,12 +13,12 @@ public class Personnage {
         STATIQUE
     };
 
-    final Image steveIcon = new Image("img/Steve.png");
-    final int spriteWidth = 20;
+    final Image STEVEICON = new Image("Img/Steve.png");
+    final int SPRITEWIDTH = 20;
 
-    int posX;
-    int posY;
-    int vitesse;
+    int positionX;
+    int positionY;
+    int actualSpeed;
     int nbPiece;
     Direction newDirection;
     Direction currentDirection;
@@ -26,15 +27,16 @@ public class Personnage {
     boolean wasInvincible = false;
 
     public Personnage(){
-        this.posX = 90;
-        this.posY = 50;
-        this.vitesse = 1;
+        this.positionX = 90;
+        this.positionY = 50;
+        this.actualSpeed = 1;
         this.nbPiece = 0;
         this.newDirection = Direction.STATIQUE;
         this.currentDirection = Direction.STATIQUE;
     }
 
-    public void deplacement(Tilemap tilemap){
+    /*
+    public void deplacement(Tilemap tilemap, GraphicsContext gc){
         if (tilemap.isCenter(this.getCenterPosX(), this.getCenterPosY())){
             if (Collision.notCollidingWithWalls(this, tilemap)){
                 this.currentDirection = this.newDirection;
@@ -44,24 +46,26 @@ public class Personnage {
         }
         switch (this.currentDirection){
             case HAUT:
-                this.posY -=this.vitesse;
+                this.positionY -=this.actualSpeed;
                 break;
             case BAS:
-                this.posY +=this.vitesse;
+                this.positionY +=this.actualSpeed;
                 break;
             case DROITE:
-                this.posX +=this.vitesse;
+                this.positionX +=this.actualSpeed;
                 break;
             case GAUCHE:
-                this.posX -=this.vitesse;
+                this.positionX -=this.actualSpeed;
                 break;
             default:
                 break;
         }
+        gc.drawImage(this.STEVEICON,this.positionX,this.positionY);
     }
 
+
     public void setNewDirection(Direction direction){
-        this.newDirection =direction;
+        this.newDirection = direction;
     }
 
     public  void checkInvincibility (){
@@ -73,42 +77,23 @@ public class Personnage {
 
     }
 
-    public int getHeight(){return (int) steveIcon.getHeight();};
+    public int getHeight(){return (int) STEVEICON.getHeight();};
 
-    public int getPosX(){
-        return this.posX;
+    public int getPositionX(){
+        return this.positionX;
     }
 
-    public int getPosY(){
-        return this.posY;
+    public int getPositionY(){
+        return this.positionY;
     }
 
     public int getCenterPosX(){
-        return this.posX +this.spriteWidth/2;
+        return this.positionX +this.SPRITEWIDTH /2;
     }
 
     public int getCenterPosY(){
-        return this.posY +this.spriteWidth/2;
+        return this.positionY +this.SPRITEWIDTH /2;
     }
 
-    public int getXaxe (int BLOCKSIDE){
-        int x = 0;
-
-        while(posX >x*BLOCKSIDE){
-            x++;
-        }
-        if(x*BLOCKSIDE!= posX){
-            x--;
-        }
-        return x;
-    }
-
-    public int getYaxe (int BLOCKSIDE){
-        int y = 0;
-        while(posY >y*BLOCKSIDE){
-            y++;
-        }
-        y--;
-        return y;
-    }
+     */
 }

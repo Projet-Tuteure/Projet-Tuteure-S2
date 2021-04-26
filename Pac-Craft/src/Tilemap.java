@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 public class Tilemap {
     final int BLOCKSIDE = 40;
-    final String pathToTexture = "/img/";
+    final String pathToTexture = "/Img/";
     final int nbTexture = 4;
 
     int[][][] listeNiveaux = {
@@ -64,11 +64,11 @@ public class Tilemap {
         this.map = listeNiveaux[nMap];
         this.nbBlockWidth = listeNiveaux[nMap][0].length;
         this.nbBlockHeight = listeNiveaux[nMap].length;
-        //System.out.println(nbBlockHeight+","+nbBlockWidth);
         this.canvas = new Canvas(BLOCKSIDE * nbBlockWidth, BLOCKSIDE * nbBlockHeight);
         this.graphicsContext = canvas.getGraphicsContext2D();
         this.niveauCourant = nMap;
         loadImages(this.pattern);
+
         //Initialisation de la liste de blocks sur lesquels on peut marcher
         floorBlocks.add(0);
         floorBlocks.add(2);
@@ -81,13 +81,12 @@ public class Tilemap {
         }
     }
 
-    public void display(int[][] map,Image Steve,int posx,int posy) {
+    public void display(int[][] map, GraphicsContext gc) {
         for (int i = 0; i < map[0].length; i++) {
             for (int j = 0; j < map.length; j++) {
-                graphicsContext.drawImage(pattern[this.map[j][i]], i  * BLOCKSIDE, j * BLOCKSIDE);
+                gc.drawImage(pattern[this.map[j][i]], i  * BLOCKSIDE, j * BLOCKSIDE);
             }
         }
-        graphicsContext.drawImage(Steve,posx,posy);
     }
 
     public int getBlockSide(){
