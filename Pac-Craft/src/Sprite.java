@@ -30,6 +30,7 @@ public class Sprite{
     private int direction;
     Direction newDirection;
     Direction currentDirection;
+    private boolean isStatic;
     private double width;
     private double height;
     private double index;
@@ -57,7 +58,7 @@ public class Sprite{
         this.isAlive = true;
         this.killable = killable;
         this.direction = 0;
-        this.newDirection = Direction.STATIQUE;
+        this.newDirection = Direction.HAUT;
         this.currentDirection = Direction.STATIQUE;
         this.width = width;
         this.height = height;
@@ -312,12 +313,11 @@ public class Sprite{
      * @param gc GraphicsContext the canvas to draw in
      */
     public void render(GraphicsContext gc) { // à modifier ici pour les collisions
-        double sX;
-        if (this.actualSpeed == 0 && isAlive){
-            gc.drawImage(this.image, this.initialXSpriteAlive, this.currentDirection.ordinal() * this.height, this.width, this.height, this.positionX, this.positionY, this.width, this.height);
-        } else if (this.actualSpeed != 0 && isAlive){
-            sX = this.width * this.index;
-            gc.drawImage(this.image, sX, (this.currentDirection.ordinal()+4) * this.height ,this.width, this.height, this.positionX,this.positionY, this.width,this.height);
+        double indexX = this.width * this.index;;
+        if (this.currentDirection==Direction.STATIQUE && isAlive){
+            gc.drawImage(this.image, indexX, (this.newDirection.ordinal()+this.initialYSpriteAlive) * this.height, this.width, this.height, this.positionX, this.positionY, this.width, this.height);
+        } else if (this.currentDirection!=Direction.STATIQUE && isAlive){
+            gc.drawImage(this.image, indexX, (this.currentDirection.ordinal()+this.initialYSpriteAlive+4) * this.height ,this.width, this.height, this.positionX,this.positionY, this.width,this.height);
         }
     }
 

@@ -27,7 +27,7 @@ public class Collision {
         int yIndex = tilemap.getTileY(personnage.getCenterPosY());
         if(tilemap.getTileFromXYTile(xIndex, yIndex)==3){
             tilemap.listeNiveaux[tilemap.niveauCourant][yIndex][xIndex]=0;
-            System.out.println("TU es invincible !");
+            personnage.powerUp();
         }
     }
 
