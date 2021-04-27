@@ -330,7 +330,7 @@ public class Sprite{
         if (tilemap.isCenter(this.getCenterPosX(), this.getCenterPosY())){
             if (Collision.notCollidingWithWalls(this, tilemap)){
                 this.currentDirection = this.newDirection;
-            } else if (this.currentDirection == this.newDirection){
+            } else {
                 this.currentDirection = Sprite.Direction.STATIQUE;
             }
         }
