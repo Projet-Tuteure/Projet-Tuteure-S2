@@ -1,4 +1,6 @@
 import javafx.scene.canvas.GraphicsContext;
+
+import java.io.FileInputStream;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -13,11 +15,11 @@ public class Player extends Sprite{
      * Generate a new Player
      */
     public Player(){
-        super("Img/steve.png",0, 0, 12,200,280,1,40,40, true);
+        super("Img/steve.png",420, 0, 12,400,280,1,40,40, true);
         this.hp = 3;
         this.isSuperMode = false;
         this.superPowerTime = 10000; // 10 secondes
-        this.superPowerSpeed = super.getDefaultSpeed(); //super.getDefaultSpeed()*2;
+        this.superPowerSpeed = super.getDefaultSpeed()*2;
     }
 
     /** Generate a new Player
@@ -118,8 +120,8 @@ public class Player extends Sprite{
      */
     public void powerUp(){
         this.isSuperMode = true;
-        super.setKillable(false);
         super.setActualSpeed(this.superPowerSpeed);
+        super.setKillable(false);
         super.setInitialYSpriteAlive(8);
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
@@ -128,7 +130,7 @@ public class Player extends Sprite{
                 Player.this.isSuperMode = false;
                 Player.super.setKillable(true);
                 Player.super.setActualSpeed(Player.super.getDefaultSpeed());
-                Player.super.setInitialYSpriteAlive(8);
+                Player.super.setInitialYSpriteAlive(0);
                 //Player.this.reset();
             }
         }, this.superPowerTime);

@@ -28,6 +28,8 @@ public class Collision {
         if(tilemap.getTileFromXYTile(xIndex, yIndex)==3){
             tilemap.listeNiveaux[tilemap.niveauCourant][yIndex][xIndex]=0;
             personnage.powerUp();
+            personnage.setPositionX(personnage.getPositionX()-personnage.getPositionX()%2);
+            personnage.setPositionY(personnage.getPositionY()-personnage.getPositionY()%2);
         }
     }
 

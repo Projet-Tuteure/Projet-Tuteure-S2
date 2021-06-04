@@ -333,6 +333,8 @@ public class Sprite{
             } else {
                 this.currentDirection = Sprite.Direction.STATIQUE;
             }
+            Son son = new Son();
+            son.playWalking();
         }
 
         this.update(t);
