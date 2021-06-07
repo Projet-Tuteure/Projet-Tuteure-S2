@@ -33,7 +33,7 @@ public class UI extends Pane{
         scoreLbl = new Text(Integer.toString(score));
         scoreLbl.setLayoutX(blockSize/2);
         scoreLbl.setLayoutY(blockSize/2+fontSize/2-2);
-        Font minecraftFont = Font.loadFont( Main.class.getClassLoader().getResourceAsStream( "fonts/Minecraft.ttf"), fontSize);
+        Font minecraftFont = Font.loadFont( Main.class.getClassLoader().getResourceAsStream("fonts/Minecraft.ttf"), fontSize);
         scoreLbl.setFont(minecraftFont);
         scoreLbl.setFill(Color.WHITE);
 
@@ -45,7 +45,7 @@ public class UI extends Pane{
     }
 
     public void updatePv(Pane pvPane){
-        Image coeurTemplate = new Image("img/hearth.png");
+        Image coeurTemplate = new Image("img/heart.png");
         int yOrigin = blockSize*(tm.getNbBlockHeight()-1)+blockSize/2-(int)coeurTemplate.getHeight()/2;
         int xOrigin = 0;
         pvPane.setLayoutX(xOrigin);
@@ -54,7 +54,7 @@ public class UI extends Pane{
 
         int imgToDraw = pv;
         for(int i = 0 ; i < imgToDraw ; i++){
-            Image coeur = new Image("img/hearth.png");
+            Image coeur = new Image("img/heart.png");
             ImageView coeurView = new ImageView(coeur);
             pvPane.getChildren().add(coeurView);
             coeurView.setLayoutX(i*blockSize+blockSize/2-(int)coeurTemplate.getWidth()/2);

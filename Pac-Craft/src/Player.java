@@ -9,16 +9,18 @@ public class Player extends Sprite{
     private int superPowerTime;
     private double superPowerSpeed;
     private int nbPiece;
+    private UI ui;
 
     /**
      * Generate a new Player
      */
-    public Player(){
+    public Player(UI ui){
         super("img/steve.png",420, 0, 12,400,280,1,40,40, true);
         this.hp = 3;
         this.isSuperMode = false;
         this.superPowerTime = 10000; // 10 secondes
         this.superPowerSpeed = super.getDefaultSpeed()*2;
+        this.ui = ui;
     }
 
     /** Generate a new Player
@@ -27,12 +29,13 @@ public class Player extends Sprite{
      * @param width
      * @param height
      */
-    public Player(int posX, int posY, int width, int height){
+    public Player(int posX, int posY, int width, int height, UI ui){
         super("Art/steve.png", 850,0, 3, posX, posY, 0.5, width, height, true);
         this.hp = 3;
         this.isSuperMode = false;
         this.superPowerTime = 10000; // 10 secondes
         this.superPowerSpeed = super.getDefaultSpeed() *2;
+        this.ui = ui;
     }
 
     /**
@@ -105,6 +108,7 @@ public class Player extends Sprite{
      */
     public void setNbPiece(int nbPiece) {
         this.nbPiece = nbPiece;
+        this.ui.setScore(nbPiece);
     }
 
     /**
@@ -112,6 +116,7 @@ public class Player extends Sprite{
      */
     public void addPiece(){
         this.nbPiece += 1;
+        this.ui.addToScore(1);
     }
 
     /**
@@ -151,6 +156,8 @@ public class Player extends Sprite{
                 hp--;
             }
         }, 1300);
+
+        this.ui.decrementPv();
     }
 
     /** Display the player to the canvas
