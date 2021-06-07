@@ -1,6 +1,5 @@
 import javafx.scene.canvas.GraphicsContext;
 
-import java.io.FileInputStream;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -15,7 +14,7 @@ public class Player extends Sprite{
      * Generate a new Player
      */
     public Player(){
-        super("Img/steve.png",420, 0, 12,400,280,1,40,40, true);
+        super("img/steve.png",420, 0, 12,400,280,1,40,40, true);
         this.hp = 3;
         this.isSuperMode = false;
         this.superPowerTime = 10000; // 10 secondes

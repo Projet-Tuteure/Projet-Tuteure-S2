@@ -1,5 +1,6 @@
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -8,7 +9,12 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.StackPane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
+
+import java.io.File;
+import java.util.Stack;
 
 
 public class Main extends Application {
@@ -24,12 +30,20 @@ public class Main extends Application {
         gameOver= false;
         Tilemap tilemap = new Tilemap(0);
         Player Steve = new Player();
+        UI ui = new UI(tilemap);
 
         // Mise en place de la fenetre
         Group root = new Group();
-        Scene scene = new Scene(root, tilemap.getNbBlockWidth()*tilemap.getBlockSide(), tilemap.getNbBlockHeight()*tilemap.getBlockSide());
+
+        // Mise en place du stackPane
+        StackPane stackPane = new StackPane();
+        ObservableList stackPaneChildren = stackPane.getChildren();
+        stackPaneChildren.add(root);
+        stackPaneChildren.add(ui);
+
+        Scene scene = new Scene(stackPane,tilemap.getNbBlockWidth()*tilemap.getBlockSide(), tilemap.getNbBlockHeight()*tilemap.getBlockSide());
         stage.setTitle("Pac-Craft");
-        stage.getIcons().add(new Image("Img/icon.png"));
+        stage.getIcons().add(new Image("img/icon.png"));
         stage.setResizable(false);
         stage.setScene(scene);
 
@@ -76,11 +90,20 @@ public class Main extends Application {
                     case DOWN:  Steve.setNewDirection(Sprite.Direction.BAS); break;
                     case LEFT:  Steve.setNewDirection(Sprite.Direction.GAUCHE); break;
                     case RIGHT: Steve.setNewDirection(Sprite.Direction.DROITE); break;
+                    case ESCAPE: playSound("walking.wav"); break;
                     case P: gameOver = true; break;
                     // case SHIFT: running = true; break;
                 }
             }
         });
+    }
+
+    public static void playSound(String path) {
+        String absolutePath = "/home/hmont/Documents/cours/projet_tuto/S2/Projet-Tuteure-S2/Pac-Craft/src/Sons/";
+        String filePath = absolutePath + path;
+        Media sound = new Media(new File(filePath).toURI().toString());
+        MediaPlayer mediaPlayer = new MediaPlayer(sound);
+        mediaPlayer.play();
     }
 
     public static void main(String[] args) {

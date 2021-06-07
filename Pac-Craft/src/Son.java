@@ -1,39 +1,35 @@
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
-import javafx.scene.media.MediaView;
 
-import javax.sound.sampled.*;
-import java.io.*;
-import java.net.URL;
+import java.io.File;
 
 public class Son {
 
-    private static Media zombie;
-    private static Media walking;
-    private static Media theme;
-
-    private final int BUFFER_SIZE = 128000;
-    private File soundFile;
-    private AudioInputStream audioStream;
-    private AudioFormat audioFormat;
-    private SourceDataLine sourceLine;
+    private static String zombie;
+    private static String walking;
+    private static String theme;
 
     public Son(){
-        /*zombie = new Media("Sons/zombie.mp3");
-        walking = new Media("Sons/walking.mp3");
-        theme = new Media("Sons/theme.mp3");*/
+        zombie = "sons/zombie.mp3";
+        walking = "walking.wav";
+        theme = "sons/theme.mp3";
     }
 
     public void playZombie() {
-        MediaPlayer player = new MediaPlayer(Son.zombie);
-        player.play();
     }
 
     public void playWalking() {
+        playSound("walking.wav");
     }
 
     public void playTheme() {
-        MediaPlayer player = new MediaPlayer(Son.theme);
-        player.play();
+    }
+
+    public static void playSound(String path) {
+        String absolutePath = "/home/hmont/Documents/cours/projet_tuto/S2/Projet-Tuteure-S2/Pac-Craft/src/Sons/";
+        String filePath = absolutePath + path;
+        Media sound = new Media(new File(filePath).toURI().toString());
+        MediaPlayer mediaPlayer = new MediaPlayer(sound);
+        mediaPlayer.play();
     }
 }
