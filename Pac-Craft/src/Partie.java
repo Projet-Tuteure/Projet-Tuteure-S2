@@ -87,6 +87,8 @@ public class Partie {
     }
 
     public Scene sceneJeu(Stage stage) {
+        if(!musicPlayer.getStatus().equals(MediaPlayer.Status.PLAYING))
+            musicPlayer.play();
         // Mise en place du stackPane principal
         StackPane stackPane = new StackPane();
         ObservableList stackPaneChildren = stackPane.getChildren();
