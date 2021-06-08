@@ -7,7 +7,7 @@ import java.util.Arrays;
 public class Tilemap {
     final int BLOCKSIDE = 40;
     final String pathToTexture = "/img/";
-    final int nbTexture = 4;
+    final int nbTexture = 5;
 
     int[][][] listeNiveaux = {
             {
@@ -15,7 +15,7 @@ public class Tilemap {
                     {1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1},
                     {1,2,1,1,1,1,1,2,1,1,2,1,1,2,1,1,1,1,1,2,1},
                     {1,2,2,2,1,2,2,2,2,2,2,2,2,2,2,2,1,2,2,2,1},
-                    {1,1,1,2,1,2,1,2,1,1,0,1,1,2,1,2,1,2,1,1,1},
+                    {1,1,1,2,1,2,1,2,1,1,4,1,1,2,1,2,1,2,1,1,1},
                     {1,2,2,2,2,2,1,2,1,0,0,0,1,2,1,2,2,2,2,2,1},
                     {1,2,1,1,1,1,1,2,1,1,1,1,1,2,1,1,1,1,1,2,1},
                     {1,2,2,2,2,2,2,3,2,2,0,2,2,2,2,2,2,2,2,2,1},
@@ -31,7 +31,7 @@ public class Tilemap {
                     {1,2,1,2,2,2,1,2,1,2,2,2,1,2,1,2,2,2,1,2,1},
                     {1,2,1,1,1,2,1,2,1,1,1,1,1,2,1,2,1,1,1,2,1},
                     {1,2,2,2,1,2,2,2,2,2,2,2,2,2,2,2,1,2,2,2,1},
-                    {1,2,1,2,2,2,1,2,1,1,0,1,1,2,1,2,2,2,1,2,1},
+                    {1,2,1,2,2,2,1,2,1,1,4,1,1,2,1,2,2,2,1,2,1},
                     {1,2,1,1,1,1,1,2,1,0,0,0,1,2,1,1,1,1,1,2,1},
                     {1,2,1,2,2,2,1,2,1,1,1,1,1,2,1,2,2,2,1,2,1},
                     {1,2,2,2,1,2,1,2,2,2,0,2,2,2,1,2,1,2,2,2,1},
@@ -46,7 +46,7 @@ public class Tilemap {
                     {1,2,1,2,1,2,1,2,2,2,1,2,2,2,1,2,1,2,1,2,1},
                     {1,2,1,2,2,2,1,1,1,2,1,2,1,1,1,2,2,2,1,2,1},
                     {1,2,1,1,1,2,1,2,2,2,2,2,2,2,1,2,1,1,1,2,1},
-                    {1,2,2,2,1,2,2,2,1,1,0,1,1,2,2,2,1,2,2,2,1},
+                    {1,2,2,2,1,2,2,2,1,1,4,1,1,2,2,2,1,2,2,2,1},
                     {1,2,1,2,2,2,1,2,1,0,0,0,1,2,1,2,2,2,1,2,1},
                     {1,2,1,2,1,1,1,2,1,1,1,1,1,2,1,1,1,2,1,2,1},
                     {1,2,2,2,1,2,2,2,2,2,0,2,2,2,2,2,1,2,2,2,1},
@@ -65,6 +65,7 @@ public class Tilemap {
     Image[] pattern = new Image[nbTexture];
     int[][] map;
     ArrayList<Integer> floorBlocks = new ArrayList<Integer>();
+    ArrayList<Integer> floorBlocksZombie = new ArrayList<Integer>();
 
 
     Tilemap(int nMap) {
@@ -76,10 +77,15 @@ public class Tilemap {
         this.niveauCourant = nMap;
         loadImages(this.pattern);
 
-        //Initialisation de la liste de blocks sur lesquels on peut marcher
+        //Initialisation de la liste de blocks sur lesquels le joueur peut marcher
         floorBlocks.add(0);
         floorBlocks.add(2);
         floorBlocks.add(3);
+        //Initialisation de la liste de blocks sur lesquels le zombie peut marcher
+        floorBlocksZombie.add(0);
+        floorBlocksZombie.add(2);
+        floorBlocksZombie.add(3);
+        floorBlocksZombie.add(4);
     }
 
     public void loadImages(Image[] tableauImage){

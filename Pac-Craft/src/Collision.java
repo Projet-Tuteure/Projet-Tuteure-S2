@@ -71,6 +71,33 @@ public class Collision {
         }
     }
 
+    public static boolean notCollidingWithWalls(Zombie zombie, Tilemap tilemap){
+        switch (zombie.newDirection){
+            case HAUT:
+                if (tilemap.floorBlocksZombie.contains(tilemap.getTileFromXY(zombie.getCenterPosX(), zombie.getCenterPosY()-tilemap.BLOCKSIDE))){
+                    return true;
+                }
+                return false;
+            case BAS:
+                if (tilemap.floorBlocksZombie.contains(tilemap.getTileFromXY(zombie.getCenterPosX(), zombie.getCenterPosY()+tilemap.BLOCKSIDE))){
+                    return true;
+                }
+                return false;
+            case DROITE:
+                if (tilemap.floorBlocksZombie.contains(tilemap.getTileFromXY(zombie.getCenterPosX()+tilemap.BLOCKSIDE, zombie.getCenterPosY()))){
+                    return true;
+                }
+                return false;
+            case GAUCHE:
+                if (tilemap.floorBlocksZombie.contains(tilemap.getTileFromXY(zombie.getCenterPosX()-tilemap.BLOCKSIDE, zombie.getCenterPosY()))){
+                    return true;
+                }
+                return false;
+            default:
+                return false;
+        }
+    }
+
     /**
      * @param player Sprite to compare position with zombie
      * @param zombie Sprite to compare position with player
