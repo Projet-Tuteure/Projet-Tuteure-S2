@@ -1,4 +1,6 @@
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.media.MediaPlayer;
+import javafx.util.Duration;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -13,6 +15,8 @@ public class Player extends Sprite{
     private int superPowerTime;
     private double superPowerSpeed;
     private UI ui;
+    private MediaPlayer walkingPlayer;
+    private MediaPlayer runningPlayer;
 
     /**
      * Generate a new Player
@@ -24,6 +28,15 @@ public class Player extends Sprite{
         this.superPowerTime = 10000; // 10 secondes
         this.superPowerSpeed = super.getDefaultSpeed()*2;
         this.ui = ui;
+        // Sound
+        this.walkingPlayer = Son.getPlayer("walking");
+        walkingPlayer.setOnEndOfMedia(new Runnable() {
+            @Override
+            public void run() {
+                walkingPlayer.seek(new Duration(0));
+            }
+        });
+        this.runningPlayer = Son.getPlayer("running");
     }
 
     /** Generate a new Player
@@ -49,8 +62,22 @@ public class Player extends Sprite{
     public void nextFrame(Tilemap tilemap,GraphicsContext gc, double t, Player player){
         if (tilemap.isCenter(this.getCenterPosX(), this.getCenterPosY())){
             if (Collision.notCollidingWithWalls(this, tilemap)){
+                if(player.isSuperMode()){
+                    if(!runningPlayer.getStatus().equals(MediaPlayer.Status.PLAYING))
+                        runningPlayer.play();
+                }else{
+                    if(!walkingPlayer.getStatus().equals(MediaPlayer.Status.PLAYING))
+                        walkingPlayer.play();
+                }
                 this.currentDirection = this.newDirection;
             } else {
+                if(player.isSuperMode()){
+                    if(runningPlayer.getStatus().equals(MediaPlayer.Status.PLAYING))
+                        runningPlayer.stop();
+                }else{
+                    if(walkingPlayer.getStatus().equals(MediaPlayer.Status.PLAYING))
+                        walkingPlayer.stop();
+                }
                 this.currentDirection = Sprite.Direction.STATIQUE;
             }
         }
@@ -58,6 +85,16 @@ public class Player extends Sprite{
         this.update(t);
 
         this.render(gc);
+    }
+
+    /**
+     * stops every sounds the player is emitting
+     */
+    public void stopSounds(){
+        if(walkingPlayer.getStatus().equals(MediaPlayer.Status.PLAYING))
+            walkingPlayer.stop();
+        if(runningPlayer.getStatus().equals(MediaPlayer.Status.PLAYING))
+            runningPlayer.stop();
     }
 
     /**
@@ -146,6 +183,7 @@ public class Player extends Sprite{
      */
     public void powerUp(){
         this.isSuperMode = true;
+        super.setKillable(false);
         super.setActualSpeed(this.superPowerSpeed);
         // Center player to tile to avoid collision detection problem
         this.setPositionX(this.getPositionX()-this.getPositionX()%2);
@@ -169,7 +207,6 @@ public class Player extends Sprite{
      * Method to set player dead and respawn with HP decreased
      */
     public void dead(){
-        super.setActualSpeed(0);
         this.isSuperMode = false;
         super.setAlive(false);
 
@@ -178,20 +215,20 @@ public class Player extends Sprite{
             @Override
             public void run() {
                 respawn(SPAWNX,SPAWNY);
-                Player.super.setActualSpeed(1);
                 Player.super.setNewDirection(Direction.HAUT);
                 hp--;
             }
         }, 1300);
 
         this.ui.decrementPv();
+        Son.getPlayer("minus").play();
     }
 
     /** Display the animation of player dying
      * @param gc the canva to draw in
      */
     public void animationKilled(GraphicsContext gc){
-        super.setDyingAnimation(gc,5*64, 0, 4, 2);
+        super.setDyingAnimation(gc,0, 0, 6, 1);
         super.getDyingAnimation().play();
     }
 
@@ -201,7 +238,6 @@ public class Player extends Sprite{
     @Override
     public void reset() {
         super.reset();
-        //super.respawn(100, 100);
         super.setKillable(true);
         this.isSuperMode = false;
     }

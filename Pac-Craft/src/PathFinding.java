@@ -1,24 +1,24 @@
 import java.util.*;
 
 public class PathFinding {
-    private ArrayList<Case> ferme = new ArrayList<Case>();
-    private ArrayList<Case> ouverte = new ArrayList<Case>();
-    private ArrayList<Case> path = new ArrayList<>();
-    private boolean go = false;
+    ArrayList<Case> ferme = new ArrayList<Case>();
+    ArrayList<Case> ouverte = new ArrayList<Case>();
+    ArrayList<Case> path = new ArrayList<>();
 
-    // les lignes 0 et les colonnes 0 sont ignorées dans le calcul du chemin
+    boolean go = false;
+
+    // les lignes 0 et les colonnes 0 sont ignorées dans le calcul du chemain
     // elles nous permettent seulement d'avoir un tableau de recherche commençant à 1 au lieu de 0;
     private int[][] tilemap;
-    private Case debut;
-    private Case fin;
+    Case debut;
+    Case fin;
+
 
     public PathFinding() {
     }
 
     public PathFinding(Case debut, Case fin, int[][] tilemap) {
         this.tilemap = tilemap;
-        System.out.println(Arrays.deepToString(tilemap));
-        //transposeeMatrice();
         if (this.tilemap[debut.getX()][debut.getY()] != 1 && this.tilemap[fin.getX()][fin.getY()] != 1) {
             System.out.println("je suis dans le if de pathfinding");
             this.debut = debut;
@@ -26,22 +26,11 @@ public class PathFinding {
             ajoutAdjacentAOuverte(debut);
         } else {
             System.out.println("Vous êtes sur un mur !!!");
+            //path.add(null);
         }
+        System.out.println("tilemap " + Arrays.deepToString(this.tilemap));
         System.out.println("debut " + this.debut);
         System.out.println("fin " + this.fin);
-    }
-
-    public void transposeeMatrice(){
-        int[][] tabTransposee = new int[this.tilemap.length][this.tilemap.length];
-        for(int i = 0; i<this.tilemap.length;i++) {
-            for (int j = 0; j < this.tilemap.length; j++) {
-                tabTransposee[i][j] = 0;
-                for (int k = 0; k < this.tilemap.length; k++) {
-                    tabTransposee[i][j] = this.tilemap[j][i];
-                }
-            }
-        }
-        this.tilemap = tabTransposee;
     }
 
     public void ajoutAdjacentAOuverte(Case debut) {
@@ -59,13 +48,13 @@ public class PathFinding {
                 yc = courante.getY();
 
                 if ((yc >= 1) && (tilemap[xc][yc - 1] != 1)) ajoutOuverte(courante, (new Case(xc, yc - 1)));//////
-                if ((yc < tilemap.length - 1) && (tilemap[xc][yc + 1] != 1))
+                if ((yc < tilemap[0].length - 1) && (tilemap[xc][yc + 1] != 1))
                     ajoutOuverte(courante, (new Case(xc, yc + 1)));//////
                 if (xc < tilemap.length - 1) {
                     if ((tilemap[xc + 1][yc] != 1)) ajoutOuverte(courante, (new Case(xc + 1, yc)));///////
                     if ((yc >= 1) && (tilemap[xc + 1][yc - 1] != 1) && !((tilemap[xc][yc - 1] == 1) || (tilemap[xc + 1][yc] == 1)))
                         ajoutOuverte(courante, (new Case(xc + 1, yc - 1))); //les 2 dernieres conditions: !((pos[xc][yc-1] == 1) || (pos[xc+1][yc] == 1)) pour eviter de sauter par dessus les coins des murs
-                    if ((yc < tilemap.length - 1) && (tilemap[xc + 1][yc + 1] != 1) && !((tilemap[xc + 1][yc] == 1) || (tilemap[xc][yc + 1] == 1)))
+                    if ((yc < tilemap[0].length - 1) && (tilemap[xc + 1][yc + 1] != 1) && !((tilemap[xc + 1][yc] == 1) || (tilemap[xc][yc + 1] == 1)))
                         ajoutOuverte(courante, (new Case(xc + 1, yc + 1)));//les 2 dernieres conditions: !((pos[xc+1][yc] == 1) || (pos[xc][yc+1] == 1)) pour eviter de sauter par dessus les coins des murs
                 }
                 if (xc >= 1) {
@@ -73,7 +62,7 @@ public class PathFinding {
                         ajoutOuverte(courante, (new Case(xc - 1, yc)));
                     if ((yc >= 1) && (tilemap[xc - 1][yc - 1] != 1) && !((tilemap[xc - 1][yc] == 1) || (tilemap[xc][yc - 1] == 1)))
                         ajoutOuverte(courante, (new Case(xc - 1, yc - 1)));//les 2 dernieres conditions: !((pos[xc-1][yc] == 1) || (pos[xc][yc-1] == 1)) pour eviter de sauter par dessus les coins des murs
-                    if ((yc < tilemap.length - 1) && (tilemap[xc - 1][yc + 1] != 1) && !((tilemap[xc - 1][yc] == 1) || (tilemap[xc][yc + 1] == 1)))
+                    if ((yc < tilemap[0].length - 1) && (tilemap[xc - 1][yc + 1] != 1) && !((tilemap[xc - 1][yc] == 1) || (tilemap[xc][yc + 1] == 1)))
                         ajoutOuverte(courante, (new Case(xc - 1, yc + 1)));///les 2 dernieres conditions: !((pos[xc-1][yc] == 1) || (pos[xc][yc+1] == 1)) pour eviter de sauter par dessus les coins des murs
                 }
 
@@ -208,10 +197,38 @@ public class PathFinding {
             tilemap[fil.getX()][fil.getY()] = 8;
         }
         System.out.println("*****************");
-        for (int pl = 0; pl < this.tilemap.length; pl++) {
-            for (int c = 0; c < this.tilemap.length; c++)
+        for (int pl = 0; pl < tilemap.length; pl++) {
+            for (int c = 0; c < tilemap[0].length; c++)
                 System.out.print(tilemap[pl][c] + " ");
             System.out.println();
         }
+    }
+
+
+    public static void main(String[] args) {
+        Case debut = new Case(1,1);
+        Case fin = new Case(11, 19);
+        int [][] tab = {
+                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+                {1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1},
+                {1,2,1,1,1,1,1,2,1,1,2,1,1,2,1,1,1,1,1,2,1},
+                {1,2,2,2,1,2,2,2,2,2,2,2,2,2,2,2,1,2,2,2,1},
+                {1,1,1,2,1,2,1,2,1,1,0,1,1,2,1,2,1,2,1,1,1},
+                {1,2,2,2,2,2,1,2,1,0,0,0,1,2,1,2,2,2,2,2,1},
+                {1,2,1,1,1,1,1,2,1,1,1,1,1,2,1,1,1,1,1,2,1},
+                {1,2,2,2,2,2,2,2,2,2,0,2,2,2,2,2,2,2,2,2,1},
+                {1,2,1,1,1,1,2,1,1,2,1,2,1,1,2,1,1,1,1,2,1},
+                {1,2,2,2,2,1,2,1,2,2,1,2,2,1,2,1,2,2,2,2,1},
+                {1,2,1,1,2,1,2,1,2,1,1,1,2,1,2,1,2,1,1,2,1},
+                {1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1},
+                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
+        };
+
+        PathFinding recherche = new PathFinding(debut, fin, tab);
+        recherche.dessine();
+        recherche.dessineResult();
+        // Case lastElement = recherche.getLastElement();
+        //System.out.println("le putain de f " + debut.getF());
+        System.out.println(recherche.path);
     }
 }

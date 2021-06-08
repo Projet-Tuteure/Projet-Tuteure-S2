@@ -7,18 +7,34 @@ import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 public class Launcher {
     private Scene mainMenu;
     private final Main main;
+    private static MediaPlayer musicPlayer;
 
     public Launcher(Main main){
         this.main = main;
+        musicPlayer=Son.getPlayer("Sweden");
+        musicPlayer.setOnEndOfMedia(new Runnable() {
+            @Override
+            public void run() {
+                musicPlayer.seek(new Duration(0));
+            }
+        });
+        musicPlayer.setStartTime(new Duration(1000*15));
+        musicPlayer.setVolume(1);
     }
 
     public Scene getScene(Stage stage) {
+        if(!musicPlayer.getStatus().equals(MediaPlayer.Status.PLAYING)){
+            musicPlayer.play();
+        }
+
         final int WIDTH = 840;
         final int HEIGHT = 520;
 
@@ -29,6 +45,7 @@ public class Launcher {
         play.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+                musicPlayer.stop();
                 main.newGame(stage);
             }
         });

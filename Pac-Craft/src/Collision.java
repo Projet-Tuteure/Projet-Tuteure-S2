@@ -107,6 +107,8 @@ public class Collision {
         if (player.isColliding(zombie) && !player.isSuperMode() && player.isKillable()) {
             player.animationKilled(gc);
             player.dead();
+            // FAIRE RESPAWN TOUS LES ZOMBIES ?
+            zombie.respawn();
             return true;
         }
         if (zombie.isColliding(player) && player.isSuperMode() && zombie.isKillable()) {
@@ -115,5 +117,24 @@ public class Collision {
             return true;
         }
         return false;
+    }
+
+    public static boolean isOnSameLine(Tilemap tilemap, Player player, Zombie zombie){
+        if (player.getPositionX() == zombie.getPositionX()){
+            for (int i = (int)player.getPositionY(); i< (int)zombie.getPositionY(); i+=40){
+                if (tilemap.getTileFromXY((int) player.getPositionX(), i)== 1){
+                    return false;
+                }
+            }
+            return true;
+        } else if (player.getPositionY() == zombie.getPositionY()){
+            for (int i = (int)player.getPositionX(); i< (int)zombie.getPositionX(); i+=40){
+                if (tilemap.getTileFromXY(i, (int) player.getPositionY())== 1){
+                    return false;
+                }
+            }
+            return true;
+        } else
+            return false;
     }
 }

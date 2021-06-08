@@ -41,11 +41,19 @@ public class Zombie extends Sprite{
             if (Collision.notCollidingWithWalls(this, tilemap)){
                 this.currentDirection = this.newDirection;
             }
-            if (!this.isType()){
-                this.currentDirection = this.directionZombie(tilemap);
+            if ( !Collision.isOnSameLine(tilemap,player,(Zombie) this)){
+                Random random = new Random();
+                ArrayList<Direction> listDirections;
+                if (player.isSuperMode())
+                    listDirections = ((Zombie) this).getAway(tilemap, player);
+                else
+                    listDirections = ((Zombie) this).directionZombie(tilemap, player);
+                System.out.println("taille que l'on connaitre : " + listDirections.size());
+                this.currentDirection = listDirections.get(random.nextInt(listDirections.size()));
+                System.out.println("currente direction aleatoire : " + this.currentDirection);
                 this.newDirection = this.currentDirection;
             }else {
-                this.currentDirection = this.aStarPath(tilemap, player);
+                this.currentDirection = ((Zombie) this).aStarPath(tilemap, player);
                 this.newDirection = this.currentDirection;
             }
         }
@@ -98,8 +106,12 @@ public class Zombie extends Sprite{
      * @param gc canva to draw in
      */
     public void animationKilled(GraphicsContext gc){
-        super.setDyingAnimation(gc,5*64, 0, 4, 2);
+        super.setDyingAnimation(gc,0, 0, 6, 1);
         super.getDyingAnimation().play();
+    }
+
+    public void respawn(){
+        super.respawn(SPAWNX, SPAWNY);
     }
 
     /**
@@ -112,8 +124,6 @@ public class Zombie extends Sprite{
             @Override
             public void run() {
                 Zombie.super.respawn(SPAWNX,SPAWNY);
-                System.out.println("zombie meurt");
-                //Zombie.this.reset();
             }
         }, 1300);
     }
@@ -123,7 +133,7 @@ public class Zombie extends Sprite{
      * @param tilemap the map played
      * @return random available direction
      */
-    public Direction directionZombie(Tilemap tilemap) {
+    public ArrayList<Direction> directionZombie(Tilemap tilemap, Player player) {
         int x = (int)getPositionX();
         int y = (int)getPositionY();
         int sizeBlock = (int)super.getWidth();
@@ -140,55 +150,84 @@ public class Zombie extends Sprite{
         if(tilemap.getTileFromXY(x, y - sizeBlock) != 1)
             listDirection.add(Direction.HAUT);
 
-        switch (actualDirection){
-            case HAUT:
-                if (listDirection.size() > 1)
-                    listDirection.remove(Direction.BAS);
-                break;
-            case DROITE:
-                if (listDirection.size() > 1)
-                    listDirection.remove(Direction.GAUCHE);
-                break;
-            case BAS:
-                if (listDirection.size() > 1)
-                    listDirection.remove(Direction.HAUT);
-                break;
-            case GAUCHE:
-                if (listDirection.size() > 1)
-                    listDirection.remove(Direction.DROITE);
-                break;
+        if (!player.isSuperMode()){
+            switch (actualDirection){
+                case HAUT:
+                    if (listDirection.size() > 1)
+                        listDirection.remove(Direction.BAS);
+                    break;
+                case DROITE:
+                    if (listDirection.size() > 1)
+                        listDirection.remove(Direction.GAUCHE);
+                    break;
+                case BAS:
+                    if (listDirection.size() > 1)
+                        listDirection.remove(Direction.HAUT);
+                    break;
+                case GAUCHE:
+                    if (listDirection.size() > 1)
+                        listDirection.remove(Direction.DROITE);
+                    break;
+            }
+            System.out.println("Je suis con");
         }
-        return listDirection.get(random.nextInt(listDirection.size()));
+        return listDirection;
     }
 
     public Direction aStarPath(Tilemap tilemap, Player player){
-        Case fin = new Case(tilemap.getTileX((int)player.getPositionX()), tilemap.getTileY((int)player.getPositionY()));
+        Case fin = new Case(tilemap.getTileX((int)player.getPositionY()), tilemap.getTileY((int)player.getPositionX()));
         System.out.println(tilemap.getTileX((int)player.getPositionX()));
         System.out.println(tilemap.getTileY((int)player.getPositionY()));
 
-        Case debut = new Case(tilemap.getTileX((int)this.getPositionX()),tilemap.getTileY((int)this.getPositionY()));
-        System.out.println("x zombie : " + debut.getX()+ " et y zombie : " + debut.getY());
+        Case debut = new Case(tilemap.getTileX((int)this.getPositionY()),tilemap.getTileY((int)this.getPositionX()));
         PathFinding pathFinding = new PathFinding(debut, fin, tilemap.getMap(0));
-        System.out.println(Arrays.deepToString(tilemap.getMap(0)));
         Case caseToGo = pathFinding.getLastElement();
-        System.out.println("xToGo : " + caseToGo.getX() + " et yToGo : "+caseToGo.getY());
         if (caseToGo != null){
             System.out.println("salut ");
             if (caseToGo.getX() > debut.getX()){
-                System.out.println("Go a droite");
-                return Direction.DROITE;
-            } else if (caseToGo.getY() < debut.getY()){
-                System.out.println("Go a haut");
-                return Direction.HAUT;
-            } else if (caseToGo.getY() > debut.getY()){
                 System.out.println("Go a bas");
                 return Direction.BAS;
-            } else if (caseToGo.getX() < debut.getX()){
+            } else if (caseToGo.getY() < debut.getY()){
                 System.out.println("Go a gauche");
                 return Direction.GAUCHE;
+            } else if (caseToGo.getY() > debut.getY()){
+                System.out.println("Go a droite");
+                return Direction.DROITE;
+            } else if (caseToGo.getX() < debut.getX()){
+                System.out.println("Go a HAUT");
+                return Direction.HAUT;
             }
         }
         return Direction.STATIQUE;
+    }
+
+    public ArrayList<Direction> getAway(Tilemap tilemap, Player player){
+        ArrayList<Direction> possibleDirection = this.directionZombie(tilemap, player);
+        System.out.println("je fui");
+        if (player.getPositionX() > this.getPositionX() || player.getPositionY() == this.getPositionY()){
+            switch (player.getCurrentDirection()){
+                case HAUT:
+                    possibleDirection.remove(Direction.BAS);
+                    break;
+                case DROITE:
+                    possibleDirection.remove(Direction.GAUCHE);
+                    break;
+                case BAS:
+                    possibleDirection.remove(Direction.HAUT);
+                    break;
+                case GAUCHE:
+                    possibleDirection.remove(Direction.DROITE);
+                    break;
+            }
+        } else if (player.getPositionY() > this.getPositionY()){
+            possibleDirection.remove(Direction.BAS);
+        } else {
+            possibleDirection.remove(Direction.HAUT);
+        }
+        if (possibleDirection.size() == 0){
+            possibleDirection.add(Direction.STATIQUE);
+        }
+        return possibleDirection;
     }
 
     /**

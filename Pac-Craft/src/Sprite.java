@@ -29,7 +29,6 @@ public abstract class Sprite{
     private boolean killable;
     Direction newDirection;
     Direction currentDirection;
-    private boolean isStatic;
     private double width;
     private double height;
     private double index;
@@ -328,10 +327,7 @@ public abstract class Sprite{
      * @return boolean True if collide, False if not
      */
     public boolean isColliding(Sprite s) {
-        if (s.getBoundary().intersects(this.getBoundary()) && this.isAlive){
-            return true;
-        }
-        return false;
+        return s.getBoundary().intersects(this.getBoundary()) && this.isAlive;
     }
 
     /** Respawn the Sprite to (X,Y) position with update characteristics
@@ -342,6 +338,14 @@ public abstract class Sprite{
         this.positionX = posX;
         this.positionY = posY;
         this.isAlive = true;
+/*        this.killable = false;
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                killable = true;
+            }
+        }, 5000);*/
     }
 
     /**
@@ -354,19 +358,22 @@ public abstract class Sprite{
     /**
      * animation of dead
      * @param gc the canva to draw in
-     * @param xPositionOfDyingImageInSpriteSheet int the initial position of the dying image in the Sprite's sheet
+     * @param yPositionOfDyingImageInSpriteSheet int the initial position of the dying image in the Sprite's sheet
      * @param firstImage int the initial index of dying image
      * @param lastImage int the last index of dying image
      * @param nbRepeat int number of time to repeat the animation
      */
-    public void setDyingAnimation(GraphicsContext gc, int xPositionOfDyingImageInSpriteSheet, int firstImage, int lastImage, int nbRepeat){
+    public void setDyingAnimation(GraphicsContext gc, int yPositionOfDyingImageInSpriteSheet, int firstImage, int lastImage, int nbRepeat){
+        Image imageWood = new Image("img/0.png");
+        Image imageBlood = new Image("img/blood.png");
         this.dyingAnimation = new Timeline();
         this.dyingAnimation.setCycleCount(nbRepeat);
         for (int i = firstImage; i < lastImage; i++){
             int finalI = i;
             this.dyingAnimation.getKeyFrames().add(new KeyFrame(Duration.millis(i * 100 + 100), (ActionEvent event) -> {
                 gc.clearRect(this.positionX,this.positionY,this.width,this.height);
-                gc.drawImage(this.image, xPositionOfDyingImageInSpriteSheet, this.height * finalI, this.width, this.height, this.positionX, this.positionY, this.width, this.height);
+                gc.drawImage(imageWood, this.positionX, this.positionY, this.width, this.height);
+                gc.drawImage(imageBlood, this.width*finalI, yPositionOfDyingImageInSpriteSheet, this.width, this.height, this.positionX, this.positionY, this.width, this.height);
             }));
         }
     }

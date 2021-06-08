@@ -10,10 +10,12 @@ import javafx.scene.control.Button;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.util.ArrayList;
 import java.util.Timer;
@@ -23,6 +25,7 @@ public class Partie {
     private final Main main;
     final int PAUSEVALUE = 10;
 
+    private static MediaPlayer musicPlayer;
     boolean gameOver;
     boolean paused;
     AnimationTimer animationTimer;
@@ -51,6 +54,8 @@ public class Partie {
 /*        zombieArrayList.add(zombie2);
         zombieArrayList.add(zombie3);
         zombieArrayList.add(zombie4);*/
+
+        initMusicPlayer();
     }
 
     public Partie(Main main, int nMap, int nbPiece, int hp) {
@@ -71,6 +76,14 @@ public class Partie {
         /*zombieArrayList.add(zombie2);
         zombieArrayList.add(zombie3);
         zombieArrayList.add(zombie4);*/
+
+        initMusicPlayer();
+    }
+
+    public void initMusicPlayer(){
+        musicPlayer=Son.getPlayer("Rubedo");
+        musicPlayer.setVolume(0.08);
+        musicPlayer.setStartTime(new Duration(1000*30));
     }
 
     public Scene sceneJeu(Stage stage) {
@@ -165,6 +178,8 @@ public class Partie {
         if (paused) return;
         paused=true;
 
+        player.stopSounds();
+
         Text pauseTitle = new Text("Pause");
         Font minecraftFont = Font.loadFont(Main.class.getClassLoader().getResourceAsStream("fonts/Minecraft.ttf"), 20);
         pauseTitle.setFont(minecraftFont);
@@ -192,6 +207,7 @@ public class Partie {
         menu.setOnAction(event -> {
             paused=false;
             animationTimer.stop();
+            musicPlayer.stop();
             main.setLauncher(stage);
         });
 
@@ -210,6 +226,9 @@ public class Partie {
     private void gameOver(Stage stage, ObservableList stackChildren, Tilemap tilemap){
         if (paused || player.getHp()>0) return;
         paused=true;
+
+        Son.getPlayer("death").play();
+        player.stopSounds();
 
         Text pauseTitle = new Text("Game Over");
         Font minecraftFont = Font.loadFont(Main.class.getClassLoader().getResourceAsStream("fonts/Minecraft.ttf"), 20);
@@ -232,6 +251,7 @@ public class Partie {
         play.setOnAction(event -> {
             paused=false;
             animationTimer.stop();
+            musicPlayer.stop();
             main.newGame(stage);
         });
 
@@ -239,6 +259,7 @@ public class Partie {
         menu.setOnAction(event -> {
             paused=false;
             animationTimer.stop();
+            musicPlayer.stop();
             main.setLauncher(stage);
         });
 
@@ -257,6 +278,8 @@ public class Partie {
     private void winMenu(Stage stage, ObservableList stackChildren, Tilemap tilemap){
         if (paused) return;
         paused=true;
+
+        player.stopSounds();
 
         Text pauseTitle = new Text("Victoire");
         Font minecraftFont = Font.loadFont(Main.class.getClassLoader().getResourceAsStream("fonts/Minecraft.ttf"), 20);
@@ -279,6 +302,7 @@ public class Partie {
         play.setOnAction(event -> {
             paused=false;
             animationTimer.stop();
+            musicPlayer.stop();
             main.newGame(stage, player.getNbPiece(), player.getHp());
         });
 
@@ -286,6 +310,7 @@ public class Partie {
         menu.setOnAction(event -> {
             paused=false;
             animationTimer.stop();
+            musicPlayer.stop();
             main.setLauncher(stage);
         });
 
