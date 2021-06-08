@@ -1,5 +1,6 @@
 import javafx.application.Application;
 import javafx.scene.Group;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 
@@ -7,6 +8,7 @@ public class Main extends Application {
     Group root;
     Launcher launcher;
     Partie partie;
+    int nMap;
 
     public static void main(String[] args) {
         launch(args);
@@ -20,13 +22,25 @@ public class Main extends Application {
     }
 
     public void initFenetre(Stage stage){
+        stage.setTitle("Pac-Craft");
+        stage.getIcons().add(new Image("img/icon.png"));
+        stage.setResizable(false);
+
         root = new Group();
         launcher = new Launcher(this);
+        nMap = 0;
     }
 
     public void newGame(Stage stage){
         root = new Group();
         partie = new Partie(this);
+        stage.setScene(partie.sceneJeu(stage));
+    }
+
+    public void newGame(Stage stage, int nbPiece, int hp){
+        this.nMap+=1;
+        root = new Group();
+        partie = new Partie(this, this.nMap, nbPiece, hp);
         stage.setScene(partie.sceneJeu(stage));
     }
 

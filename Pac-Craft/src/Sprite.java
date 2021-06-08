@@ -255,6 +255,10 @@ public class Sprite{
         return this.direction;
     }
 
+    public Sprite.Direction getCurrentDirection(){
+        return this.currentDirection;
+    }
+
     /**
      * @param direction int : 0 -> top ; 1 -> right ; 2 -> bottom ; 3 -> left
      */

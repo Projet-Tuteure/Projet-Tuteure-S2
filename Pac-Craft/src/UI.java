@@ -10,43 +10,53 @@ public class UI extends Pane{
     private int pv;
     private int score;
     private Text scoreLbl;
+    private ImageView coinImg;
     private Pane pvPane;
     private int blockSize;
-    private Tilemap tm;
+    private int halfBlockSize;
+    private Tilemap tilemap;
 
-    public UI(Tilemap tm){
-        this(tm,3,0);
+    public UI(Tilemap tilemap){
+        this(tilemap,3,0);
     }
 
-    public UI(Tilemap tm,int pv,int score){
+    public UI(Tilemap tilemap, int pv, int score){
+        this.blockSize= tilemap.getBlockSide();
+        this.halfBlockSize = blockSize/2;
+        this.tilemap = tilemap;
         this.pv = pv;
         this.score=score;
-        blockSize=tm.getBlockSide();
-        this.tm=tm;
 
         initWidgets();
     }
 
     private void initWidgets(){
         int fontSize = 20;
+        Font minecraftFont = Font.loadFont( Main.class.getClassLoader().getResourceAsStream("fonts/Minecraft.ttf"), fontSize);
+
+        // Création du compteur de pièces
+        Pane scorePane = new Pane();
+
+        coinImg = new ImageView(new Image("img/coin.png"));
+        coinImg.setLayoutX(halfBlockSize-coinImg.getImage().getWidth()/2);
+        coinImg.setLayoutY(halfBlockSize-coinImg.getImage().getHeight()/2);
 
         scoreLbl = new Text(Integer.toString(score));
-        scoreLbl.setLayoutX(blockSize/2);
-        scoreLbl.setLayoutY(blockSize/2+fontSize/2-2);
-        Font minecraftFont = Font.loadFont( Main.class.getClassLoader().getResourceAsStream("fonts/Minecraft.ttf"), fontSize);
+        scoreLbl.setLayoutX(halfBlockSize+coinImg.getImage().getWidth());
+        scoreLbl.setLayoutY(halfBlockSize+fontSize/2-2);
         scoreLbl.setFont(minecraftFont);
         scoreLbl.setFill(Color.WHITE);
 
+        scorePane.getChildren().add(coinImg);
+        scorePane.getChildren().add(scoreLbl);
         pvPane = new Pane();
         updatePv(pvPane);
-
-        getChildren().addAll(scoreLbl,pvPane);
-
+        getChildren().addAll(scorePane,pvPane);
     }
 
     public void updatePv(Pane pvPane){
         Image coeurTemplate = new Image("img/heart.png");
-        int yOrigin = blockSize*(tm.getNbBlockHeight()-1)+blockSize/2-(int)coeurTemplate.getHeight()/2;
+        int yOrigin = blockSize*(tilemap.getNbBlockHeight()-1)+blockSize/2-(int)coeurTemplate.getHeight()/2;
         int xOrigin = 0;
         pvPane.setLayoutX(xOrigin);
         pvPane.setLayoutY(yOrigin);

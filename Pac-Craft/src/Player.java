@@ -5,10 +5,10 @@ import java.util.TimerTask;
 
 public class Player extends Sprite{
     private int hp;
+    private int nbPiece;
     private boolean isSuperMode;
     private int superPowerTime;
     private double superPowerSpeed;
-    private int nbPiece;
     private UI ui;
 
     /**
@@ -30,7 +30,7 @@ public class Player extends Sprite{
      * @param height
      */
     public Player(int posX, int posY, int width, int height, UI ui){
-        super("Art/steve.png", 850,0, 3, posX, posY, 0.5, width, height, true);
+        super("img/steve.png", 850,0, 3, posX, posY, 0.5, width, height, true);
         this.hp = 3;
         this.isSuperMode = false;
         this.superPowerTime = 10000; // 10 secondes

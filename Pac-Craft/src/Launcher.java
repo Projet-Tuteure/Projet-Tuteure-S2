@@ -7,9 +7,7 @@ import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class Launcher {
@@ -50,8 +48,8 @@ public class Launcher {
         titleBox.getStyleClass().add("title-box");
 
         VBox menuBox = new VBox(titleBox,play,quitter);
-        menuBox.setSpacing(7);
-        menuBox.setPadding(new Insets(150));
+        menuBox.setSpacing(HEIGHT/21);
+        menuBox.setPadding(new Insets(HEIGHT/7));
         menuBox.getStyleClass().add("main-box");
         BackgroundImage bgimg = new BackgroundImage(
                 new Image("img/background.jpg",WIDTH,HEIGHT,false,false),
@@ -65,6 +63,7 @@ public class Launcher {
 
         mainMenu = new Scene(mainBox, WIDTH, HEIGHT);
 
+        Font.loadFont( Main.class.getClassLoader().getResourceAsStream( "fonts/Minecraft.ttf"), 20);
         mainMenu.getStylesheets().add("styles/style.css");
 
         return mainMenu;

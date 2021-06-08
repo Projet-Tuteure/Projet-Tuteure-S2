@@ -12,7 +12,6 @@ public class Collision {
         if(tilemap.getTileFromXYTile(xIndex, yIndex)==2){
             tilemap.listeNiveaux[tilemap.niveauCourant][yIndex][xIndex]=0;
             personnage.addPiece();
-            System.out.println("TU AS "+ personnage.getNbPiece()+" pièces chacal");
         }
     }
 

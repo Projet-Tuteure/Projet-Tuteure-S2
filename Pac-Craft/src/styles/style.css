@@ -4,8 +4,10 @@
     -fx-text-fill: white;
     -fx-background-color: #9f9f9f;
     -fx-border-radius: 3;
-    -fx-max-width: 175px;
-    -fx-max-height: 30px;
+    -fx-max-width: 200px;
+    -fx-max-height: 50px;
+    -fx-min-width: 200px;
+    -fx-min-height: 50px;
 }
 
 .main-box {
@@ -16,7 +18,7 @@
 
 .title-box {
     -fx-alignment: center;
-    -fx-padding: 50px 0 100px 0;
+    -fx-padding: 50px 0 50px 0;
 }
 
 .text-noms {

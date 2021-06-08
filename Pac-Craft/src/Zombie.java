@@ -1,4 +1,6 @@
 import javafx.scene.canvas.GraphicsContext;
+
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -9,7 +11,7 @@ public class Zombie extends Sprite{
      * Generate a new Zombie
      */
     public Zombie(){
-        super("Art/zombie.png",0,0, 2, 250,250,0.5,64,64, false);
+        super("img/steve.png",420,0, 12, 240,240,0.5,40,40, false);
         this.fearMode = false;
     }
 
@@ -21,8 +23,39 @@ public class Zombie extends Sprite{
      * @param height height of zombie character
      */
     public Zombie(int initialXSpriteAlive, int initialYSpriteAlive, int posX, int posY, int width, int height){
-        super("Art/zombie.png", initialXSpriteAlive, initialYSpriteAlive, 2, posX, posY, 0.5, width, height, false);
+        super("img/steve.png", initialXSpriteAlive, initialYSpriteAlive, 12, posX, posY, 0.5, width, height, false);
         this.fearMode = false;
+    }
+
+    public void nextFrame(Tilemap tilemap, Player player,GraphicsContext gc, double t){
+        if (tilemap.isCenter(this.getCenterPosX(), this.getCenterPosY())){
+            this.newDirection = randomEnum(Sprite.Direction.class);
+
+            while (!Collision.notCollidingWithWalls(this, tilemap) || opposedDirection(this.currentDirection, this.newDirection)){
+                this.newDirection = randomEnum(Sprite.Direction.class);
+            }
+            this.currentDirection = this.newDirection;
+        }
+
+        this.update(t);
+
+        this.render(gc);
+    }
+
+    public static <T extends Enum<?>> T randomEnum(Class<T> clazz){
+        Random random = new Random();
+        int x = random.nextInt(clazz.getEnumConstants().length);
+        return clazz.getEnumConstants()[x];
+    }
+
+    public boolean opposedDirection(Direction currentDirection, Direction newDirection){
+        if ((currentDirection==Direction.BAS && newDirection==Direction.HAUT) || (currentDirection==Direction.HAUT && newDirection==Direction.BAS)){
+            return true;
+        }
+        if ((currentDirection==Direction.DROITE && newDirection==Direction.GAUCHE) || (currentDirection==Direction.GAUCHE && newDirection==Direction.DROITE)){
+            return true;
+        }
+        return false;
     }
 
     /**
