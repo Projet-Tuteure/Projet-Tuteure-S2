@@ -22,7 +22,7 @@ public class Launcher {
         final int WIDTH = 840;
         final int HEIGHT = 520;
 
-        Image title = new Image("/img/title.png");
+        Image title = new Image("/img/title1.png");
         ImageView titleView = new ImageView(title);
 
         Button play = new Button("Jouer");

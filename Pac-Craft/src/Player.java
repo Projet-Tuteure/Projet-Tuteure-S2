@@ -5,7 +5,7 @@ import java.util.TimerTask;
 
 public class Player extends Sprite{
     private final int SPAWNX = 400;
-    private final int SPAWNY = 280;
+    private final int SPAWNY = 320;
 
     private int hp;
     private int nbPiece;
@@ -18,7 +18,7 @@ public class Player extends Sprite{
      * Generate a new Player
      */
     public Player(UI ui){
-        super("img/steve.png",420, 0, 12,400,280,1,40,40, true);
+        super("img/steve.png",420, 0, 12,400,320,1,40,40, true);
         this.hp = 3;
         this.isSuperMode = false;
         this.superPowerTime = 10000; // 10 secondes
@@ -147,8 +147,9 @@ public class Player extends Sprite{
     public void powerUp(){
         this.isSuperMode = true;
         super.setActualSpeed(this.superPowerSpeed);
-        this.setPositionX(this.getPositionX()-this.getPositionX()%40);
-        this.setPositionY(this.getCenterPosY()-this.getCenterPosY()%40);
+        // Center player to tile to avoid collision detection problem
+        this.setPositionX(this.getPositionX()-this.getPositionX()%2);
+        this.setPositionY(this.getPositionY()-this.getPositionY()%2);
         super.setKillable(false);
         super.setInitialYSpriteAlive(8);
         Timer timer = new Timer();

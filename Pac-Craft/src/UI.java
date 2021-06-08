@@ -7,7 +7,7 @@ import javafx.scene.text.Text;
 
 public class UI extends Pane{
 
-    private int pv;
+    private int hp;
     private int score;
     private Text scoreLbl;
     private ImageView coinImg;
@@ -20,11 +20,11 @@ public class UI extends Pane{
         this(tilemap,3,0);
     }
 
-    public UI(Tilemap tilemap, int pv, int score){
+    public UI(Tilemap tilemap, int hp, int score){
         this.blockSize= tilemap.getBlockSide();
         this.halfBlockSize = blockSize/2;
         this.tilemap = tilemap;
-        this.pv = pv;
+        this.hp = hp;
         this.score=score;
 
         initWidgets();
@@ -62,7 +62,7 @@ public class UI extends Pane{
         pvPane.setLayoutY(yOrigin);
         pvPane.getChildren().clear();
 
-        int imgToDraw = pv;
+        int imgToDraw = hp;
         for(int i = 0 ; i < imgToDraw ; i++){
             Image coeur = new Image("img/heart.png");
             ImageView coeurView = new ImageView(coeur);
@@ -72,21 +72,21 @@ public class UI extends Pane{
     }
 
     public void addPv(int i){
-        pv+=i;
+        hp+=i;
         updatePv(pvPane);
     }
 
     public int getPv() {
-        return pv;
+        return hp;
     }
 
-    public void setPv(int pv) {
-        this.pv = pv;
+    public void setPv(int hp) {
+        this.hp = hp;
         updatePv(pvPane);
     }
 
     public void decrementPv() {
-        this.pv -= 1;
+        this.hp -= 1;
         updatePv(pvPane);
     }
 

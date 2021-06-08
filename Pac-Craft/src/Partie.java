@@ -43,14 +43,14 @@ public class Partie {
         this.ui = new UI(tilemap);
         this.player = new Player(ui);
         zombie1 = new Zombie(false);
-        zombie2 = new Zombie(false);
+/*        zombie2 = new Zombie(false);
         zombie3 = new Zombie(false);
-        zombie4 = new Zombie(false);
+        zombie4 = new Zombie(false);*/
         zombieArrayList = new ArrayList<>();
         zombieArrayList.add(zombie1);
-        zombieArrayList.add(zombie2);
+/*        zombieArrayList.add(zombie2);
         zombieArrayList.add(zombie3);
-        zombieArrayList.add(zombie4);
+        zombieArrayList.add(zombie4);*/
     }
 
     public Partie(Main main, int nMap, int nbPiece, int hp) {
@@ -58,19 +58,19 @@ public class Partie {
         this.gameOver = false;
         this.paused = false;
         this.tilemap = new Tilemap(nMap);
-        this.ui = new UI(tilemap);
+        this.ui = new UI(tilemap, hp, nbPiece);
         this.player = new Player(ui);
         this.player.setNbPiece(nbPiece);
         this.player.setHp(hp);
         zombie1 = new Zombie(false);
-        zombie2 = new Zombie(false);
+/*        zombie2 = new Zombie(false);
         zombie3 = new Zombie(false);
-        zombie4 = new Zombie(false);
+        zombie4 = new Zombie(false);*/
         zombieArrayList = new ArrayList<>();
         zombieArrayList.add(zombie1);
-        zombieArrayList.add(zombie2);
+        /*zombieArrayList.add(zombie2);
         zombieArrayList.add(zombie3);
-        zombieArrayList.add(zombie4);
+        zombieArrayList.add(zombie4);*/
     }
 
     public Scene sceneJeu(Stage stage) {
