@@ -4,6 +4,9 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class Player extends Sprite{
+    private final int SPAWNX = 400;
+    private final int SPAWNY = 280;
+
     private int hp;
     private int nbPiece;
     private boolean isSuperMode;
@@ -36,6 +39,25 @@ public class Player extends Sprite{
         this.superPowerTime = 10000; // 10 secondes
         this.superPowerSpeed = super.getDefaultSpeed() *2;
         this.ui = ui;
+    }
+
+    /**
+     * Appelle les différentes fonctions gérant l'affichage du sprite à la prochaine frame
+     * @param gc GraphicContext dans lequel dessiner
+     * @param t Temps écoulé entre les 2 frame
+     */
+    public void nextFrame(Tilemap tilemap,GraphicsContext gc, double t, Player player){
+        if (tilemap.isCenter(this.getCenterPosX(), this.getCenterPosY())){
+            if (Collision.notCollidingWithWalls(this, tilemap)){
+                this.currentDirection = this.newDirection;
+            } else {
+                this.currentDirection = Sprite.Direction.STATIQUE;
+            }
+        }
+
+        this.update(t);
+
+        this.render(gc);
     }
 
     /**
@@ -125,6 +147,8 @@ public class Player extends Sprite{
     public void powerUp(){
         this.isSuperMode = true;
         super.setActualSpeed(this.superPowerSpeed);
+        this.setPositionX(this.getPositionX()-this.getPositionX()%40);
+        this.setPositionY(this.getCenterPosY()-this.getCenterPosY()%40);
         super.setKillable(false);
         super.setInitialYSpriteAlive(8);
         Timer timer = new Timer();
@@ -152,35 +176,15 @@ public class Player extends Sprite{
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                respawn(100,100);
+                respawn(SPAWNX,SPAWNY);
+                Player.super.setActualSpeed(1);
+                Player.super.setNewDirection(Direction.HAUT);
                 hp--;
             }
         }, 1300);
 
         this.ui.decrementPv();
     }
-
-    /** Display the player to the canvas
-     * @param gc GraphicsContext the canva to draw in
-     */
-    /*
-    @Override
-    public void render(GraphicsContext gc) {
-        super.render(gc);
-        if (this.isSuperMode){
-            gc.clearRect(0,0,500,500); // mettre des variable fixe pour les tailles de l'écran
-            double sY = super.getDirection() * super.getNbImage()*super.getHeight()+(super.getIndex()*super.getHeight());
-            double xSprite;
-            if (super.getIndex()%2 == 0)
-                xSprite = super.getInitialXSpriteAlive();
-            else
-                xSprite = 900;
-
-            gc.drawImage(super.getImage(), xSprite, sY ,super.getWidth(), super.getHeight(), super.getPositionX(),super.getPositionY(), super.getWidth(),super.getHeight());
-        }
-    }
-
-     */
 
     /** Display the animation of player dying
      * @param gc the canva to draw in
@@ -199,16 +203,5 @@ public class Player extends Sprite{
         //super.respawn(100, 100);
         super.setKillable(true);
         this.isSuperMode = false;
-    }
-
-    @Override
-    public String toString() {
-        return "Player{" +
-                super.toString() +
-                "hp=" + hp +
-                ", isSuperMode=" + isSuperMode +
-                ", superPowerTime=" + superPowerTime +
-                ", superPowerSpeed=" + superPowerSpeed +
-                '}';
     }
 }

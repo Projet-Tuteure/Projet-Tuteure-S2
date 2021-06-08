@@ -6,7 +6,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.util.Duration;
 
-public class Sprite{
+public abstract class Sprite{
     enum Direction {
         HAUT,
         DROITE,
@@ -27,7 +27,6 @@ public class Sprite{
     private double actualSpeed;
     private boolean isAlive;
     private boolean killable;
-    private int direction;
     Direction newDirection;
     Direction currentDirection;
     private boolean isStatic;
@@ -57,7 +56,6 @@ public class Sprite{
         this.actualSpeed = defaultSpeed;
         this.isAlive = true;
         this.killable = killable;
-        this.direction = 0;
         this.newDirection = Direction.HAUT;
         this.currentDirection = Direction.STATIQUE;
         this.width = width;
@@ -248,22 +246,8 @@ public class Sprite{
         this.height = height;
     }
 
-    /**
-     * @return int direction of Sprite, 0 -> top ; 1 -> right ; 2 -> bottom ; 3 -> left
-     */
-    public int getDirection() {
-        return this.direction;
-    }
-
     public Sprite.Direction getCurrentDirection(){
         return this.currentDirection;
-    }
-
-    /**
-     * @param direction int : 0 -> top ; 1 -> right ; 2 -> bottom ; 3 -> left
-     */
-    public void setDirection(int direction) {
-        this.direction = direction;
     }
 
     /**
@@ -330,19 +314,7 @@ public class Sprite{
      * @param gc GraphicContext dans lequel dessiner
      * @param t Temps écoulé entre les 2 frame
      */
-    public void nextFrame(Tilemap tilemap,GraphicsContext gc, double t){
-        if (tilemap.isCenter(this.getCenterPosX(), this.getCenterPosY())){
-            if (Collision.notCollidingWithWalls(this, tilemap)){
-                this.currentDirection = this.newDirection;
-            } else {
-                this.currentDirection = Sprite.Direction.STATIQUE;
-            }
-        }
-
-        this.update(t);
-
-        this.render(gc);
-    }
+    public abstract void nextFrame(Tilemap tilemap, GraphicsContext gc, double t, Player player);
 
     /** Useful for the collision detection
      * @return Rectangle2D a hit box of the Sprite
@@ -404,26 +376,5 @@ public class Sprite{
      */
     public void reset(){
         this.actualSpeed = this.defaultSpeed;
-    }
-
-    @Override
-    public String toString() {
-        return "Sprite{" +
-                "image=" + image +
-                ", initialXSpriteAlive=" + initialXSpriteAlive +
-                ", initialYSpriteAlive=" + initialYSpriteAlive +
-                ", nbImage=" + nbImage +
-                ", positionX=" + positionX +
-                ", positionY=" + positionY +
-                ", defaultSpeed=" + defaultSpeed +
-                ", actualSpeed=" + actualSpeed +
-                ", isAlive=" + isAlive +
-                ", killable=" + killable +
-                ", direction=" + direction +
-                ", width=" + width +
-                ", height=" + height +
-                ", index=" + index +
-                ", dyingAnimation=" + dyingAnimation +
-                '}';
     }
 }

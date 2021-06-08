@@ -2,6 +2,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Tilemap {
     final int BLOCKSIDE = 40;
@@ -17,7 +18,7 @@ public class Tilemap {
                     {1,1,1,2,1,2,1,2,1,1,0,1,1,2,1,2,1,2,1,1,1},
                     {1,2,2,2,2,2,1,2,1,0,0,0,1,2,1,2,2,2,2,2,1},
                     {1,2,1,1,1,1,1,2,1,1,1,1,1,2,1,1,1,1,1,2,1},
-                    {1,2,2,2,2,2,2,2,2,2,0,2,2,2,2,2,2,2,2,2,1},
+                    {1,2,2,2,2,2,2,3,2,2,0,2,2,2,2,2,2,2,2,2,1},
                     {1,2,1,1,1,1,2,1,1,2,1,2,1,1,2,1,1,1,1,2,1},
                     {1,2,2,2,2,1,2,1,2,2,1,2,2,1,2,1,2,2,2,2,1},
                     {1,2,1,1,2,1,2,1,2,1,1,1,2,1,2,1,2,1,1,2,1},
@@ -129,6 +130,10 @@ public class Tilemap {
         return getTileFromXYTile(getTileX(x),getTileY(y));
     }
 
+    public int[][] getMap(int niveau) {
+        return this.listeNiveaux[niveau];
+    }
+
     public boolean isCenter(int x, int y){
         if (x%(BLOCKSIDE/2)==0 && y%(BLOCKSIDE/2)==0 && x%BLOCKSIDE!=0 && y%BLOCKSIDE!=0){
             return true;
@@ -146,5 +151,23 @@ public class Tilemap {
             }
         }
         return  compteur;
+    }
+
+    @Override
+    public String toString() {
+        return "Tilemap{" +
+                "BLOCKSIDE=" + BLOCKSIDE +
+                ", pathToTexture='" + pathToTexture + '\'' +
+                ", nbTexture=" + nbTexture +
+                ", listeNiveaux=" + Arrays.toString(listeNiveaux) +
+                ", nbBlockWidth=" + nbBlockWidth +
+                ", nbBlockHeight=" + nbBlockHeight +
+                ", niveauCourant=" + niveauCourant +
+                ", canvas=" + canvas +
+                ", graphicsContext=" + graphicsContext +
+                ", pattern=" + Arrays.toString(pattern) +
+                ", map=" + Arrays.toString(map) +
+                ", floorBlocks=" + floorBlocks +
+                '}';
     }
 }

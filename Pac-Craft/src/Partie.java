@@ -15,6 +15,10 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
+
 public class Partie {
     private final Main main;
     final int PAUSEVALUE = 10;
@@ -24,8 +28,12 @@ public class Partie {
     AnimationTimer animationTimer;
     Tilemap tilemap;
     UI ui;
-    Player steve;
-    Zombie zombie;
+    Player player;
+    Zombie zombie1;
+    Zombie zombie2;
+    Zombie zombie3;
+    Zombie zombie4;
+    ArrayList<Zombie> zombieArrayList;
 
     public Partie(Main main) {
         this.main = main;
@@ -33,8 +41,16 @@ public class Partie {
         this.paused = false;
         this.tilemap = new Tilemap(0);
         this.ui = new UI(tilemap);
-        this.steve = new Player(ui);
-        this.zombie = new Zombie(420,0, 280,240,40,40);
+        this.player = new Player(ui);
+        zombie1 = new Zombie(false);
+        zombie2 = new Zombie(false);
+        zombie3 = new Zombie(false);
+        zombie4 = new Zombie(false);
+        zombieArrayList = new ArrayList<>();
+        zombieArrayList.add(zombie1);
+        zombieArrayList.add(zombie2);
+        zombieArrayList.add(zombie3);
+        zombieArrayList.add(zombie4);
     }
 
     public Partie(Main main, int nMap, int nbPiece, int hp) {
@@ -43,10 +59,18 @@ public class Partie {
         this.paused = false;
         this.tilemap = new Tilemap(nMap);
         this.ui = new UI(tilemap);
-        this.steve = new Player(ui);
-        this.steve.setNbPiece(nbPiece);
-        this.steve.setHp(hp);
-        this.zombie = new Zombie(420,0, 280,240,40,40);
+        this.player = new Player(ui);
+        this.player.setNbPiece(nbPiece);
+        this.player.setHp(hp);
+        zombie1 = new Zombie(true);
+        //zombie2 = new Zombie(false);
+        //zombie3 = new Zombie(false);
+        //zombie4 = new Zombie(false);
+        zombieArrayList = new ArrayList<>();
+        zombieArrayList.add(zombie1);
+        //zombieArrayList.add(zombie2);
+        //zombieArrayList.add(zombie3);
+        //zombieArrayList.add(zombie4);
     }
 
     public Scene sceneJeu(Stage stage) {
@@ -76,13 +100,28 @@ public class Partie {
 
                 if (!paused) {
                     tilemap.display(tilemap.map, gc);
-                    steve.nextFrame(tilemap, gc, t);
-                    zombie.nextFrame(tilemap, steve, gc, t);
+                    player.nextFrame(tilemap, gc, t, player);
+
+                    for (Zombie zombie : zombieArrayList) {
+                        zombie.nextFrame(tilemap, gc, t, player);
+                        if (Collision.collidingWithZombie(gc, player, zombie)) {
+                            stop();
+                            Timer timer = new Timer();
+                            timer.schedule(new TimerTask() {
+                                @Override
+                                public void run() {
+                                    start();
+                                }
+                            }, 1300);
+                        }
+                    }
+
                     if (tilemap.getNumberOfCoin()==0){
                         winMenu(stage, stackPaneChildren, tilemap);
                     }
-                    Collision.getPiece(tilemap, steve);
-                    Collision.getGoldApple(tilemap, steve);
+                    Collision.getPiece(tilemap, player);
+                    Collision.getGoldApple(tilemap, player, zombieArrayList);
+                    gameOver(stage, stackPaneChildren, tilemap);
                 }
 
                 // Control du nombre de frame par seconde (fps = 1000 / PAUSEVALUE)
@@ -101,23 +140,19 @@ public class Partie {
             public void handle(KeyEvent event) {
                 switch (event.getCode()) {
                     case UP:
-                        steve.setNewDirection(Sprite.Direction.HAUT);
+                        player.setNewDirection(Sprite.Direction.HAUT);
                         break;
                     case DOWN:
-                        steve.setNewDirection(Sprite.Direction.BAS);
+                        player.setNewDirection(Sprite.Direction.BAS);
                         break;
                     case LEFT:
-                        steve.setNewDirection(Sprite.Direction.GAUCHE);
+                        player.setNewDirection(Sprite.Direction.GAUCHE);
                         break;
                     case RIGHT:
-                        steve.setNewDirection(Sprite.Direction.DROITE);
+                        player.setNewDirection(Sprite.Direction.DROITE);
                         break;
                     case ESCAPE:
                         PauseMenu(stage, stackPaneChildren, tilemap);
-                        break;
-                    case P:
-                        gameOver=true;
-                        gameOver(stage, stackPaneChildren, tilemap);
                         break;
                 }
             }
@@ -173,7 +208,7 @@ public class Partie {
     }
 
     private void gameOver(Stage stage, ObservableList stackChildren, Tilemap tilemap){
-        if (paused) return;
+        if (paused || player.getHp()>0) return;
         paused=true;
 
         Text pauseTitle = new Text("Game Over");
@@ -244,7 +279,7 @@ public class Partie {
         play.setOnAction(event -> {
             paused=false;
             animationTimer.stop();
-            main.newGame(stage, steve.getNbPiece(), steve.getHp());
+            main.newGame(stage, player.getNbPiece(), player.getHp());
         });
 
         Button menu = new Button("Menu principal");
