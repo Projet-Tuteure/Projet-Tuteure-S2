@@ -1,43 +1,30 @@
 import javafx.scene.canvas.GraphicsContext;
-
 import java.util.*;
 
 public class Zombie extends Sprite{
     private final int SPAWNX = 400;
     private final int SPAWNY = 200;
 
-    private boolean fearMode;
-
     /**
-     * Generate a new Zombie
+     * Generates a new Zombie
      */
     public Zombie(){
         super("img/zombie.png",0, 0, 12,400,200, 1, 40,40, false);
-        this.fearMode = false;
     }
 
     /**
-     * Generate a new Zombie
-     * @param initialXSpriteAlive x position of the zombie character in the sprite's sheet
-     * @param posX x position of zombie character
-     * @param posY y position of zombie character
-     * @param width width of zombie character
-     * @param height height of zombie character
-     */
-    public Zombie(int initialXSpriteAlive, int initialYSpriteAlive, int posX, int posY, int width, int height){
-        super("img/zombie.png", initialXSpriteAlive, initialYSpriteAlive, 2, posX, posY, 0.5, width, height, false);
-        this.fearMode = false;
-    }
-
-    /**
-     * Calls the different functions managing the display of the sprite at the next frame
+     * Manages transition between frames
+     * @param tilemap the tilemap
      * @param gc GraphicContext for draw
      * @param time Time elapsed between the 2 frames
+     * @param player the player
      */
     public void nextFrame(Tilemap tilemap, GraphicsContext gc, double time, Player player){
+        // Check if is at center of tile
         if (tilemap.isCenter(this.getCenterPosX(), this.getCenterPosY())){
             ArrayList<Direction> listDirections = new ArrayList<Direction>();
             Random random = new Random();
+            // Check if zombie sees player, if not random direction
             if ( !Collision.isOnSameLine(tilemap,player, this)){
                 listDirections = this.zombiePossibleDirections(tilemap, player);
                 this.newDirection = listDirections.get(random.nextInt(listDirections.size()));
@@ -49,6 +36,7 @@ public class Zombie extends Sprite{
                     this.newDirection = this.smartPath(player);
                 }
             }
+            // Check if there is no collision problems with the new direction, if yes, random other direction
             if (Collision.notCollidingWithWalls(this, tilemap)){
                 this.currentDirection = this.newDirection;
             }else {
@@ -61,25 +49,11 @@ public class Zombie extends Sprite{
     }
 
     /**
-     * @return boolean True if in fear of player, False if not
-     */
-    public boolean isFearMode() {
-        return fearMode;
-    }
-
-    /**
-     * @param fearMode boolean
-     */
-    public void setFearMode(boolean fearMode) {
-        this.fearMode = fearMode;
-    }
-
-    /** Set the Zombie's speed lower by half, set him in the fearMode which makes him killable
+     * Makes zombie killable and slows him
      * @param player the Player who the Zombie is afraid of
      */
     public void fearOf(Player player){
         super.setActualSpeed(super.getDefaultSpeed()/2);
-        this.fearMode = true;
         super.setKillable(true);
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
@@ -87,10 +61,11 @@ public class Zombie extends Sprite{
             public void run() {
                 Zombie.this.reset();
             }
-        }, player.getSuperPowerTime());
+        }, player.getSuperPowerDuration());
     }
 
-    /** Display the animation of player dying
+    /**
+     * Runs player dying animation
      * @param gc canvas to draw in
      */
     public void animationKilled(GraphicsContext gc){
@@ -98,12 +73,15 @@ public class Zombie extends Sprite{
         super.getDyingAnimation().play();
     }
 
+    /**
+     * Respawn zombie and tp it to spawn
+     */
     public void respawn(){
         super.respawn(SPAWNX, SPAWNY);
     }
 
     /**
-     * Method to set Zombie dead and respawn
+     * Makes zombie die and respawn
      */
     public void dead(){
         super.setActualSpeed(getDefaultSpeed());
@@ -117,7 +95,7 @@ public class Zombie extends Sprite{
     }
 
     /**
-     * The dumb version of zombie AI
+     * The  version of zombie AI
      * @param tilemap the map played
      * @return random available direction
      */
@@ -125,7 +103,6 @@ public class Zombie extends Sprite{
         int x = (int)getPositionX();
         int y = (int)getPositionY();
         int sizeBlock = (int)super.getWidth();
-        Random random = new Random();
         Direction actualDirection = super.getCurrentDirection();
 
         ArrayList<Direction> listDirection = new ArrayList<>();
@@ -157,15 +134,14 @@ public class Zombie extends Sprite{
                         listDirection.remove(Direction.RIGHT);
                     break;
             }
-            System.out.println("Je suis con");
         }
         return listDirection;
     }
 
     /**
-     *
-     * @param player
-     * @return
+     * Calculate best direction to go nearest to player
+     * @param player the player to go to
+     * @return the best direction
      */
     public Direction smartPath(Player player){
         if (this.getPositionY()==player.getPositionY()){
@@ -185,10 +161,10 @@ public class Zombie extends Sprite{
     }
 
     /**
-     *
-     * @param tilemap
-     * @param player
-     * @return
+     * Computes directions to get away from player
+     * @param tilemap the tilemap
+     * @param player the player to get away from
+     * @return possible positions to get away from player
      */
     public ArrayList<Direction> getAway(Tilemap tilemap, Player player){
         ArrayList<Direction> possibleDirection = this.zombiePossibleDirections(tilemap, player);
@@ -210,20 +186,12 @@ public class Zombie extends Sprite{
     }
 
     /**
-     * Used to reset Zombie
+     * Puts back zombie to initial state
      */
     @Override
     public void reset() {
         super.reset();
         super.setInitialYSpriteAlive(0);
         super.setKillable(false);
-        this.fearMode = false;
-    }
-
-    @Override
-    public String toString() {
-        return "Zombie{" +
-                "fearMode=" + fearMode +
-                '}';
     }
 }

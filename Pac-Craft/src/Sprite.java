@@ -64,59 +64,10 @@ public abstract class Sprite{
     }
 
     /**
-     * @return Image the Sprite's sheet
-     */
-    public Image getImage() {
-        return this.image;
-    }
-
-    /**
-     * @param image Image Sprite's sheet
-     */
-    public void setImage(Image image) {
-        this.image = image;
-    }
-
-    /**
-     * @return int initial X position of the Sprite in the Sprite's sheet
-     */
-    public int getInitialXSpriteAlive() {
-        return this.initialXSpriteAlive;
-    }
-
-    /**
-     * @param initialXSpriteAlive int
-     */
-    public void setInitialXSpriteAlive(int initialXSpriteAlive) {
-        this.initialXSpriteAlive = initialXSpriteAlive;
-    }
-
-    /**
-     * @return int initial Y position of the Sprite in the Sprite's sheet
-     */
-    public int getInitialYSpriteAlive() {
-        return this.initialYSpriteAlive;
-    }
-
-    /**
      * @param initialYSpriteAlive int
      */
     public void setInitialYSpriteAlive(int initialYSpriteAlive) {
         this.initialYSpriteAlive = initialYSpriteAlive;
-    }
-
-    /**
-     * @return int number of image of the Sprite
-     */
-    public int getNbImage() {
-        return nbImage;
-    }
-
-    /**
-     * @param nbImage int
-     */
-    public void setNbImage(int nbImage) {
-        this.nbImage = nbImage;
     }
 
     /**
@@ -155,31 +106,10 @@ public abstract class Sprite{
     }
 
     /**
-     * @param defaultSpeed double
-     */
-    public void setDefaultSpeed(double defaultSpeed) {
-        this.defaultSpeed = defaultSpeed;
-    }
-
-    /**
-     * @return double actual speed of Sprite
-     */
-    public double getActualSpeed() {
-        return this.actualSpeed;
-    }
-
-    /**
      * @param actualSpeed double
      */
     public void setActualSpeed(double actualSpeed) {
         this.actualSpeed = actualSpeed;
-    }
-
-    /**
-     * @return boolean True if alive, False if not
-     */
-    public boolean isAlive() {
-        return this.isAlive;
     }
 
     /**
@@ -208,44 +138,6 @@ public abstract class Sprite{
      */
     public double getWidth() {
         return this.width;
-    }
-
-    /**
-     * @param width double
-     */
-    public void setWidth(double width) {
-        this.width = width;
-    }
-
-    /**
-     * @return double index used to display a specific image of Sprite
-     */
-    public double getIndex() {
-        return this.index;
-    }
-
-    /**
-     * Set index
-     * @param index
-     */
-    public void setIndex(double index) {
-        this.index = index;
-    }
-
-    /**
-     * Return height of Sprite
-     * @return double height of Sprite
-     */
-    public double getHeight(){
-        return this.height;
-    }
-
-    /**
-     * Set height of Sprite
-     * @param height of Sprite
-     */
-    public void setHeight(double height) {
-        this.height = height;
     }
 
     /**
@@ -288,16 +180,16 @@ public abstract class Sprite{
         this.index = (int) ((t % (this.nbImage * 0.1 )) / 0.1);
         switch (this.currentDirection){
             case UP:
-                this.positionY -=this.actualSpeed;
+                this.positionY -= this.actualSpeed;
                 break;
             case DOWN:
-                this.positionY +=this.actualSpeed;
+                this.positionY += this.actualSpeed;
                 break;
             case RIGHT:
-                this.positionX +=this.actualSpeed;
+                this.positionX += this.actualSpeed;
                 break;
             case LEFT:
-                this.positionX -=this.actualSpeed;
+                this.positionX -= this.actualSpeed;
                 break;
             default:
                 break;
@@ -308,8 +200,8 @@ public abstract class Sprite{
      * Display the Sprite to the Canvas
      * @param gc GraphicsContext the canvas to draw in
      */
-    public void render(GraphicsContext gc){ // à modifier ici pour les collisions
-        double indexX = this.width * this.index;;
+    public void render(GraphicsContext gc){
+        double indexX = this.width * this.index;
         if (this.currentDirection == Direction.STATIC && isAlive)
             gc.drawImage(this.image, indexX, (this.newDirection.ordinal()+this.initialYSpriteAlive) * this.height, this.width, this.height, this.positionX, this.positionY, this.width, this.height);
         else if (this.currentDirection!=Direction.STATIC && isAlive)

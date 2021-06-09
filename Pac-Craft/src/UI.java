@@ -79,11 +79,11 @@ public class UI extends Pane{
         hpPane.getChildren().clear();
 
         int imgToDraw = hp;
-        for(int i = 0 ; i < imgToDraw ; i++){
+        for(int i = 0; i < imgToDraw; i++){
             Image coeur = new Image("img/heart.png");
             ImageView coeurView = new ImageView(coeur);
             hpPane.getChildren().add(coeurView);
-            coeurView.setLayoutX(i*blockSize+blockSize/2-(int)coeurTemplate.getWidth()/2);
+            coeurView.setLayoutX(i * blockSize + blockSize/2 - (int) coeurTemplate.getWidth()/2);
         }
     }
 
@@ -118,13 +118,6 @@ public class UI extends Pane{
     public void decrementHp() {
         this.hp -= 1;
         updatePv(hpPane);
-    }
-
-    /**
-     * @return number of coins in ui
-     */
-    public int getCoin() {
-        return coin;
     }
 
     /**

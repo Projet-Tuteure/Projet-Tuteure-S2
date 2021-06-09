@@ -2,7 +2,6 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class Tilemap {
     final int BLOCKSIDE = 40;
@@ -10,21 +9,6 @@ public class Tilemap {
     final int nbTexture = 5;
 
     int[][][] levelList = {
-/*            {
-                    {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-                    {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-                    {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-                    {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-                    {1,1,1,1,1,1,1,3,0,0,0,0,0,0,1,1,1,1,1,1,1},
-                    {1,1,1,1,1,1,1,0,1,1,4,1,1,0,1,1,1,1,1,1,1},
-                    {1,1,1,1,1,1,1,0,1,0,0,0,1,0,1,1,1,1,1,1,1},
-                    {1,1,1,1,1,1,1,0,1,1,1,1,1,0,1,1,1,1,1,1,1},
-                    {1,1,1,1,1,1,1,0,0,0,0,0,0,0,1,1,1,1,1,1,1},
-                    {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1},
-                    {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-                    {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-                    {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
-            },*/
             {
                     {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
                     {1,2,2,2,2,2,2,2,2,2,1,2,2,2,2,2,2,2,2,2,1},
@@ -100,6 +84,7 @@ public class Tilemap {
         floorBlocks.add(0);
         floorBlocks.add(2);
         floorBlocks.add(3);
+
         //zombies can walk on these
         floorBlocksZombie.add(0);
         floorBlocksZombie.add(2);
@@ -179,7 +164,7 @@ public class Tilemap {
      * @return boolean if is in the center of block
      */
     public boolean isCenter(int x, int y){
-        if (x%(BLOCKSIDE/2)==0 && y%(BLOCKSIDE/2)==0 && x%BLOCKSIDE!=0 && y%BLOCKSIDE!=0){
+        if (x%(BLOCKSIDE/2) == 0 && y%(BLOCKSIDE/2) == 0 && x%BLOCKSIDE != 0 && y%BLOCKSIDE != 0){
             return true;
         }
         return false;
@@ -190,10 +175,10 @@ public class Tilemap {
      * @return number of coins in the til
      */
     public int getNumberOfCoin(){
-        int counter =0;
-        for(int i = 0; i< levelList[this.currentLevel].length; i++){
-            for(int l = 0; l< levelList[this.currentLevel][i].length; l++){
-                if(this.getValueOf(i,l)==2){
+        int counter = 0;
+        for(int i = 0; i < levelList[this.currentLevel].length; i++){
+            for(int j = 0; j < levelList[this.currentLevel][i].length; j++){
+                if(this.getValueOf(i, j) == 2){
                     counter++;
                 }
             }

@@ -16,26 +16,26 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class Game {
-    private final Main main;
+    final Main main;
     final int PAUSEVALUE = 10;
 
     private static MediaPlayer musicPlayer;
-    boolean gameOver;
-    boolean paused;
-    AnimationTimer animationTimer;
-    Tilemap tilemap;
-    UI ui;
-    Player player;
-    Zombie zombie1;
-    Zombie zombie2;
-    Zombie zombie3;
-    Zombie zombie4;
+    private boolean paused;
+    private AnimationTimer animationTimer;
+    private Tilemap tilemap;
+    private UI ui;
+
+    // Creating zombies
+    private Player player;
+    private Zombie zombie1;
+    private Zombie zombie2;
+    private Zombie zombie3;
+    private Zombie zombie4;
     ArrayList<Zombie> zombieArrayList;
 
     /**
@@ -43,23 +43,26 @@ public class Game {
      * @param main the main to use
      */
     public Game(Main main) {
+        // Interface init
         this.main = main;
-        this.gameOver = false;
         this.paused = false;
         this.tilemap = new Tilemap(0);
         this.ui = new UI(tilemap);
+        initMusicPlayer();
+
+        // Player init
         this.player = new Player(ui);
+
+        // Zombie init
         zombie1 = new Zombie();
-/*        zombie2 = new Zombie();
+        zombie2 = new Zombie();
         zombie3 = new Zombie();
-        zombie4 = new Zombie();*/
+        zombie4 = new Zombie();
         zombieArrayList = new ArrayList<>();
         zombieArrayList.add(zombie1);
-/*        zombieArrayList.add(zombie2);
+        zombieArrayList.add(zombie2);
         zombieArrayList.add(zombie3);
-        zombieArrayList.add(zombie4);*/
-
-        initMusicPlayer();
+        zombieArrayList.add(zombie4);
     }
 
     /**
@@ -70,25 +73,28 @@ public class Game {
      * @param hp the left hp
      */
     public Game(Main main, int nMap, int coinNumber, int hp) {
+        // Interface init
         this.main = main;
-        this.gameOver = false;
         this.paused = false;
         this.tilemap = new Tilemap(nMap);
         this.ui = new UI(tilemap, hp, coinNumber);
+        initMusicPlayer();
+
+        // Player init
         this.player = new Player(ui);
         this.player.setNbPiece(coinNumber);
         this.player.setHp(hp);
+
+
         zombie1 = new Zombie();
-/*        zombie2 = new Zombie();
+        zombie2 = new Zombie();
         zombie3 = new Zombie();
-        zombie4 = new Zombie();*/
+        zombie4 = new Zombie();
         zombieArrayList = new ArrayList<>();
         zombieArrayList.add(zombie1);
-        /*zombieArrayList.add(zombie2);
+        zombieArrayList.add(zombie2);
         zombieArrayList.add(zombie3);
-        zombieArrayList.add(zombie4);*/
-
-        initMusicPlayer();
+        zombieArrayList.add(zombie4);
     }
 
     /**
@@ -109,16 +115,16 @@ public class Game {
         if(!musicPlayer.getStatus().equals(MediaPlayer.Status.PLAYING))
             musicPlayer.play();
 
-        // creating main stackpane
+        // Creating main stackpane
         StackPane stackPane = new StackPane();
         ObservableList stackPaneChildren = stackPane.getChildren();
         stackPaneChildren.add(main.root);
         stackPaneChildren.add(ui);
 
-        // Création de la scène
+        // Scene creation
         Scene scene = new Scene(stackPane, tilemap.getNbBlockWidth() * tilemap.getBlockSide(), tilemap.getNbBlockHeight() * tilemap.getBlockSide());
 
-        // Mise en place des éléments graphiques
+        // Graphics init
         StackPane holder = new StackPane();
         holder.setStyle("-fx-background-color: black");
         Canvas canvas = new Canvas(tilemap.getNbBlockWidth() * tilemap.getBlockSide(), tilemap.getNbBlockHeight() * tilemap.getBlockSide());
@@ -126,7 +132,7 @@ public class Game {
         holder.getChildren().add(canvas);
         main.root.getChildren().add(holder);
 
-        // Boucle principale
+        // Game loop
         final long startNanoTime = System.nanoTime();
         this.animationTimer = new AnimationTimer() {
             @Override
@@ -159,7 +165,7 @@ public class Game {
                     gameOver(stage, stackPaneChildren, tilemap);
                 }
 
-                // Control du nombre de frame par seconde (fps = 1000 / PAUSEVALUE)
+                // Fps handling (fps = 1000 / PAUSEVALUE)
                 try {
                     Thread.sleep(PAUSEVALUE);
                 } catch (InterruptedException e) {
@@ -170,6 +176,7 @@ public class Game {
 
         animationTimer.start();
 
+        // Input handling
         scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
@@ -196,6 +203,12 @@ public class Game {
         return scene;
     }
 
+    /**
+     * Pause menu during a game
+     * @param stage the parent stage
+     * @param stackChildren the ObesrvableList of the stackPane
+     * @param tilemap the tilemap
+     */
     private void PauseMenu(Stage stage, ObservableList stackChildren, Tilemap tilemap) {
         if (paused) return;
         paused=true;
@@ -245,6 +258,12 @@ public class Game {
         stackChildren.add(pauseBox);
     }
 
+    /**
+     * The game over menu
+     * @param stage the parent stage
+     * @param stackChildren the ObservableList of the stackPane
+     * @param tilemap the tilemap
+     */
     private void gameOver(Stage stage, ObservableList stackChildren, Tilemap tilemap){
         if (paused || player.getHp()>0) return;
         paused=true;
@@ -297,6 +316,12 @@ public class Game {
         stackChildren.add(pauseBox);
     }
 
+    /**
+     * Win menu
+     * @param stage the parent stage
+     * @param stackChildren the ObservableList of the StackPane
+     * @param tilemap the tilemap
+     */
     private void winMenu(Stage stage, ObservableList stackChildren, Tilemap tilemap){
         if (paused) return;
         paused=true;

@@ -134,7 +134,6 @@ public class Collision {
     public static boolean isOnSameLine(Tilemap tilemap, Player player, Zombie zombie){
         if (player.getPositionX() == zombie.getPositionX()){
             for (int i = Math.min((int)player.getPositionY(),(int)zombie.getPositionY()); i< Math.max((int)player.getPositionY(),(int)zombie.getPositionY()) ; i+=40){
-                System.out.println(tilemap.getTileFromXY((int) player.getPositionX(), i));
                 if (tilemap.getTileFromXY((int) player.getPositionX(), i)== 1){
                     return false;
                 }

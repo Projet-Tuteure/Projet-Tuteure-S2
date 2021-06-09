@@ -10,9 +10,9 @@ public class Player extends Sprite{
     private final int SPAWNY = 320;
 
     private int hp;
-    private int nbPiece;
+    private int coinNumber;
     private boolean isSuperMode;
-    private int superPowerTime;
+    private int superPowerDuration;
     private double superPowerSpeed;
     private UI ui;
     private MediaPlayer walkingPlayer;
@@ -25,7 +25,7 @@ public class Player extends Sprite{
         super("img/steve.png",420, 0, 12,400,320,1,40,40, true);
         this.hp = 3;
         this.isSuperMode = false;
-        this.superPowerTime = 10000; // 10 secondes
+        this.superPowerDuration = 10000; // 10 secondes
         this.superPowerSpeed = super.getDefaultSpeed() * 2;
         this.ui = ui;
         // Sound
@@ -40,24 +40,7 @@ public class Player extends Sprite{
     }
 
     /**
-     * Generates a new Player at given positon and connects it to given ui
-     * @param posX the x position
-     * @param posY the y position
-     * @param width the width of the player
-     * @param height the height of the player
-     * @param ui the ui to connect
-     */
-    public Player(int posX, int posY, int width, int height, UI ui){
-        super("img/steve.png", 850,0, 3, posX, posY, 0.5, width, height, true);
-        this.hp = 3;
-        this.isSuperMode = false;
-        this.superPowerTime = 10000; // 10 secondes
-        this.superPowerSpeed = super.getDefaultSpeed() *2;
-        this.ui = ui;
-    }
-
-    /**
-     * Manages the frame
+     * Manages the transition between two frames
      * @param tilemap the tilemap
      * @param gc GraphicContext for draw
      * @param time Time elapsed between the 2 frames
@@ -102,88 +85,60 @@ public class Player extends Sprite{
     }
 
     /**
-     * @return int Health Point of player
+     * @return Health Point of player
      */
     public int getHp() {
         return this.hp;
     }
 
     /**
-     * @param hp int Health point
+     * @param hp Health point
      */
     public void setHp(int hp) {
         this.hp = hp;
     }
 
     /**
-     * @return boolean True if player is in superMode, False if not
+     * @return is player in supermode
      */
     public boolean isSuperMode() {
         return this.isSuperMode;
     }
 
     /**
-     * @param superMode True if superMode, False if not
+     * @return duration of SuperPower
      */
-    public void setSuperMode(boolean superMode) {
-        this.isSuperMode = superMode;
+    public int getSuperPowerDuration() {
+        return this.superPowerDuration;
     }
 
     /**
-     * @return int time of SuperPower
-     */
-    public int getSuperPowerTime() {
-        return this.superPowerTime;
-    }
-
-    /**
-     * @param superPowerTime int time for super power
-     */
-    public void setSuperPowerTime(int superPowerTime) {
-        this.superPowerTime = superPowerTime;
-    }
-
-    /**
-     * @return double speed when superPower activated
-     */
-    public double getSuperPowerSpeed() {
-        return this.superPowerSpeed;
-    }
-
-    /**
-     * @param superPowerSpeed double speed of superMode
-     */
-    public void setSuperPowerSpeed(double superPowerSpeed) {
-        this.superPowerSpeed = superPowerSpeed;
-    }
-
-    /**
-     * Return the number of coins owned
+     * Return the number of coin owned
      * @return number of coins
      */
     public int getNbPiece() {
-        return nbPiece;
+        return coinNumber;
     }
 
     /**
-     * Defined the number of coins owned
-     * @param nbPiece defined number of coins
+     * Sets number of coin owned to given number of coin
+     * @param coinNumber the number of coin
      */
-    public void setNbPiece(int nbPiece) {
-        this.nbPiece = nbPiece;
-        this.ui.setCoin(nbPiece);
+    public void setNbPiece(int coinNumber) {
+        this.coinNumber = coinNumber;
+        this.ui.setCoin(coinNumber);
     }
 
     /**
-     * Add coins to player
+     * Add coins to player's coin total
      */
     public void addPiece(){
-        this.nbPiece += 1;
+        this.coinNumber += 1;
         this.ui.addToCoin(1);
     }
 
     /**
-     * Method to set superMode and turn it off when time is up
+     * Switch player to powerup mode
      */
     public void powerUp(){
         this.isSuperMode = true;
@@ -202,13 +157,12 @@ public class Player extends Sprite{
                 Player.super.setKillable(true);
                 Player.super.setActualSpeed(Player.super.getDefaultSpeed());
                 Player.super.setInitialYSpriteAlive(0);
-                //Player.this.reset();
             }
-        }, this.superPowerTime);
+        }, this.superPowerDuration);
     }
 
     /**
-     * Method to set player dead and respawn with HP decreased
+     * Makes player die and decrements hp
      */
     public void dead(){
         this.isSuperMode = false;
@@ -229,7 +183,7 @@ public class Player extends Sprite{
     }
 
     /**
-     * Display the animation of player dying
+     * Runs player dying animation
      * @param gc the canvas to draw in
      */
     public void animationKilled(GraphicsContext gc){
@@ -238,7 +192,7 @@ public class Player extends Sprite{
     }
 
     /**
-     * Reset the player at the beginning without the living points
+     * Puts player back to initial status
      */
     @Override
     public void reset() {
