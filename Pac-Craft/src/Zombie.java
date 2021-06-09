@@ -7,22 +7,20 @@ public class Zombie extends Sprite{
     private final int SPAWNY = 200;
 
     private boolean fearMode;
-    private boolean type;
 
     /**
      * Generate a new Zombie
-     * @param type
      */
-    public Zombie(boolean type){
+    public Zombie(){
         super("img/zombie.png",0, 0, 12,400,200, 1, 40,40, false);
         this.fearMode = false;
-        this.type = type;
     }
 
-    /** Generate a new Zombie
+    /**
+     * Generate a new Zombie
      * @param initialXSpriteAlive x position of the zombie character in the sprite's sheet
      * @param posX x position of zombie character
-     * @param posY y positon of zombie character
+     * @param posY y position of zombie character
      * @param width width of zombie character
      * @param height height of zombie character
      */
@@ -32,34 +30,33 @@ public class Zombie extends Sprite{
     }
 
     /**
-     * Appelle les différentes fonctions gérant l'affichage du sprite à la prochaine frame
-     * @param gc GraphicContext dans lequel dessiner
-     * @param t Temps écoulé entre les 2 frame
+     * Calls the different functions managing the display of the sprite at the next frame
+     * @param gc GraphicContext for draw
+     * @param time Time elapsed between the 2 frames
      */
-    public void nextFrame(Tilemap tilemap,GraphicsContext gc, double t, Player player){
+    public void nextFrame(Tilemap tilemap, GraphicsContext gc, double time, Player player){
         if (tilemap.isCenter(this.getCenterPosX(), this.getCenterPosY())){
+            ArrayList<Direction> listDirections = new ArrayList<Direction>();
+            Random random = new Random();
+            if ( !Collision.isOnSameLine(tilemap,player, this)){
+                listDirections = this.zombiePossibleDirections(tilemap, player);
+                this.newDirection = listDirections.get(random.nextInt(listDirections.size()));
+            }else {
+                if (player.isSuperMode()) {
+                    listDirections = this.getAway(tilemap, player);
+                    this.newDirection = listDirections.get(0);
+                } else {
+                    this.newDirection = this.smartPath(player);
+                }
+            }
             if (Collision.notCollidingWithWalls(this, tilemap)){
                 this.currentDirection = this.newDirection;
-            }
-            if ( !Collision.isOnSameLine(tilemap,player,(Zombie) this)){
-                Random random = new Random();
-                ArrayList<Direction> listDirections;
-                if (player.isSuperMode())
-                    listDirections = ((Zombie) this).getAway(tilemap, player);
-                else
-                    listDirections = ((Zombie) this).directionZombie(tilemap, player);
-                System.out.println("taille que l'on connaitre : " + listDirections.size());
-                this.currentDirection = listDirections.get(random.nextInt(listDirections.size()));
-                System.out.println("currente direction aleatoire : " + this.currentDirection);
-                this.newDirection = this.currentDirection;
             }else {
-                this.currentDirection = ((Zombie) this).aStarPath(tilemap, player);
-                this.newDirection = this.currentDirection;
+                this.currentDirection = listDirections.get(random.nextInt(listDirections.size()));
             }
         }
 
-        this.update(t);
-
+        this.updatePositionCanvas(time);
         this.render(gc);
     }
 
@@ -77,19 +74,10 @@ public class Zombie extends Sprite{
         this.fearMode = fearMode;
     }
 
-    public boolean isType() {
-        return type;
-    }
-
-    public void setType(boolean type) {
-        this.type = type;
-    }
-
     /** Set the Zombie's speed lower by half, set him in the fearMode which makes him killable
      * @param player the Player who the Zombie is afraid of
      */
     public void fearOf(Player player){
-        //setInitialYSpriteAlive(550);
         super.setActualSpeed(super.getDefaultSpeed()/2);
         this.fearMode = true;
         super.setKillable(true);
@@ -103,7 +91,7 @@ public class Zombie extends Sprite{
     }
 
     /** Display the animation of player dying
-     * @param gc canva to draw in
+     * @param gc canvas to draw in
      */
     public void animationKilled(GraphicsContext gc){
         super.setDyingAnimation(gc,0, 0, 6, 1);
@@ -133,7 +121,7 @@ public class Zombie extends Sprite{
      * @param tilemap the map played
      * @return random available direction
      */
-    public ArrayList<Direction> directionZombie(Tilemap tilemap, Player player) {
+    public ArrayList<Direction> zombiePossibleDirections(Tilemap tilemap, Player player) {
         int x = (int)getPositionX();
         int y = (int)getPositionY();
         int sizeBlock = (int)super.getWidth();
@@ -142,31 +130,31 @@ public class Zombie extends Sprite{
 
         ArrayList<Direction> listDirection = new ArrayList<>();
         if(tilemap.getTileFromXY(x + sizeBlock, y) != 1)
-            listDirection.add(Direction.DROITE);
+            listDirection.add(Direction.RIGHT);
         if (tilemap.getTileFromXY(x, y + sizeBlock) != 1)
-            listDirection.add(Direction.BAS);
+            listDirection.add(Direction.DOWN);
         if(tilemap.getTileFromXY(x - sizeBlock, y) != 1)
-            listDirection.add(Direction.GAUCHE);
+            listDirection.add(Direction.LEFT);
         if(tilemap.getTileFromXY(x, y - sizeBlock) != 1)
-            listDirection.add(Direction.HAUT);
+            listDirection.add(Direction.UP);
 
         if (!player.isSuperMode()){
             switch (actualDirection){
-                case HAUT:
+                case UP:
                     if (listDirection.size() > 1)
-                        listDirection.remove(Direction.BAS);
+                        listDirection.remove(Direction.DOWN);
                     break;
-                case DROITE:
+                case RIGHT:
                     if (listDirection.size() > 1)
-                        listDirection.remove(Direction.GAUCHE);
+                        listDirection.remove(Direction.LEFT);
                     break;
-                case BAS:
+                case DOWN:
                     if (listDirection.size() > 1)
-                        listDirection.remove(Direction.HAUT);
+                        listDirection.remove(Direction.UP);
                     break;
-                case GAUCHE:
+                case LEFT:
                     if (listDirection.size() > 1)
-                        listDirection.remove(Direction.DROITE);
+                        listDirection.remove(Direction.RIGHT);
                     break;
             }
             System.out.println("Je suis con");
@@ -174,59 +162,50 @@ public class Zombie extends Sprite{
         return listDirection;
     }
 
-    public Direction aStarPath(Tilemap tilemap, Player player){
-        Case fin = new Case(tilemap.getTileX((int)player.getPositionY()), tilemap.getTileY((int)player.getPositionX()));
-        System.out.println(tilemap.getTileX((int)player.getPositionX()));
-        System.out.println(tilemap.getTileY((int)player.getPositionY()));
-
-        Case debut = new Case(tilemap.getTileX((int)this.getPositionY()),tilemap.getTileY((int)this.getPositionX()));
-        PathFinding pathFinding = new PathFinding(debut, fin, tilemap.getMap(0));
-        Case caseToGo = pathFinding.getLastElement();
-        if (caseToGo != null){
-            System.out.println("salut ");
-            if (caseToGo.getX() > debut.getX()){
-                System.out.println("Go a bas");
-                return Direction.BAS;
-            } else if (caseToGo.getY() < debut.getY()){
-                System.out.println("Go a gauche");
-                return Direction.GAUCHE;
-            } else if (caseToGo.getY() > debut.getY()){
-                System.out.println("Go a droite");
-                return Direction.DROITE;
-            } else if (caseToGo.getX() < debut.getX()){
-                System.out.println("Go a HAUT");
-                return Direction.HAUT;
+    /**
+     *
+     * @param player
+     * @return
+     */
+    public Direction smartPath(Player player){
+        if (this.getPositionY()==player.getPositionY()){
+            if ((this.getPositionX() - player.getPositionX())>0) {
+                return Direction.LEFT;
+            }else {
+                return Direction.RIGHT;
+            }
+        }else if (this.getPositionX()==player.getPositionX()){
+            if ((this.getPositionY() - player.getPositionY())>0){
+                return Direction.UP;
+            } else {
+                return Direction.DOWN;
             }
         }
-        return Direction.STATIQUE;
+        return Direction.STATIC;
     }
 
+    /**
+     *
+     * @param tilemap
+     * @param player
+     * @return
+     */
     public ArrayList<Direction> getAway(Tilemap tilemap, Player player){
-        ArrayList<Direction> possibleDirection = this.directionZombie(tilemap, player);
-        System.out.println("je fui");
-        if (player.getPositionX() > this.getPositionX() || player.getPositionY() == this.getPositionY()){
-            switch (player.getCurrentDirection()){
-                case HAUT:
-                    possibleDirection.remove(Direction.BAS);
-                    break;
-                case DROITE:
-                    possibleDirection.remove(Direction.GAUCHE);
-                    break;
-                case BAS:
-                    possibleDirection.remove(Direction.HAUT);
-                    break;
-                case GAUCHE:
-                    possibleDirection.remove(Direction.DROITE);
-                    break;
+        ArrayList<Direction> possibleDirection = this.zombiePossibleDirections(tilemap, player);
+        if (this.getPositionY()==player.getPositionY()){
+            if ((this.getPositionX() - player.getPositionX())>0) {
+                possibleDirection.remove(Direction.LEFT);
+            }else {
+                possibleDirection.remove(Direction.RIGHT);
             }
-        } else if (player.getPositionY() > this.getPositionY()){
-            possibleDirection.remove(Direction.BAS);
-        } else {
-            possibleDirection.remove(Direction.HAUT);
+        }else if (this.getPositionX()==player.getPositionX()){
+            if ((this.getPositionY() - player.getPositionY())>0){
+                possibleDirection.remove(Direction.UP);
+            } else {
+                possibleDirection.remove(Direction.DOWN);
+            }
         }
-        if (possibleDirection.size() == 0){
-            possibleDirection.add(Direction.STATIQUE);
-        }
+
         return possibleDirection;
     }
 
@@ -245,7 +224,6 @@ public class Zombie extends Sprite{
     public String toString() {
         return "Zombie{" +
                 "fearMode=" + fearMode +
-                ", type=" + type +
                 '}';
     }
 }

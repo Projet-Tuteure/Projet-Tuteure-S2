@@ -7,7 +7,7 @@ import javafx.stage.Stage;
 public class Main extends Application {
     Group root;
     Launcher launcher;
-    Partie partie;
+    Game game;
     int nMap;
 
     public static void main(String[] args) {
@@ -16,12 +16,16 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        initFenetre(stage);
+        initWindow(stage);
         setLauncher(stage);
         stage.show();
     }
 
-    public void initFenetre(Stage stage){
+    /**
+     * initialize window
+     * @param stage the parent stage
+     */
+    public void initWindow(Stage stage){
         stage.setTitle("Pac-Craft");
         stage.getIcons().add(new Image("img/icon.png"));
         stage.setResizable(false);
@@ -31,19 +35,33 @@ public class Main extends Application {
         nMap = 0;
     }
 
+    /**
+     * Creates a new game on given stage
+     * @param stage the parent stage
+     */
     public void newGame(Stage stage){
         root = new Group();
-        partie = new Partie(this);
-        stage.setScene(partie.sceneJeu(stage));
+        game = new Game(this);
+        stage.setScene(game.gameScene(stage));
     }
 
-    public void newGame(Stage stage, int nbPiece, int hp){
+    /**
+     * Creates a new gamein given stage with given coin number and hp
+     * @param stage
+     * @param coinNumber
+     * @param hp
+     */
+    public void newGame(Stage stage, int coinNumber, int hp){
         this.nMap+=1;
         root = new Group();
-        partie = new Partie(this, this.nMap, nbPiece, hp);
-        stage.setScene(partie.sceneJeu(stage));
+        game = new Game(this, this.nMap, coinNumber, hp);
+        stage.setScene(game.gameScene(stage));
     }
 
+    /**
+     * Sets launcher as scene from the given stage
+     * @param stage the parent stage
+     */
     public void setLauncher(Stage stage) {
         stage.setScene(launcher.getScene(stage));
     }

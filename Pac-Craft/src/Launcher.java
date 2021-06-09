@@ -17,9 +17,13 @@ public class Launcher {
     private final Main main;
     private static MediaPlayer musicPlayer;
 
+    /**
+     * creates a launcher with given main
+     * @param main the window to launch
+     */
     public Launcher(Main main){
         this.main = main;
-        musicPlayer=Son.getPlayer("Sweden");
+        musicPlayer= Sound.getPlayer("Sweden");
         musicPlayer.setOnEndOfMedia(new Runnable() {
             @Override
             public void run() {
@@ -30,6 +34,11 @@ public class Launcher {
         musicPlayer.setVolume(1);
     }
 
+    /**
+     * Generates the launcher scene
+     * @param stage the parent stage
+     * @return the generated scene
+     */
     public Scene getScene(Stage stage) {
         if(!musicPlayer.getStatus().equals(MediaPlayer.Status.PLAYING)){
             musicPlayer.play();
@@ -41,7 +50,7 @@ public class Launcher {
         Image title = new Image("/img/title1.png");
         ImageView titleView = new ImageView(title);
 
-        Button play = new Button("Jouer");
+        Button play = new Button("Play");
         play.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -50,7 +59,7 @@ public class Launcher {
             }
         });
 
-        Button quitter = new Button("Quitter");
+        Button quitter = new Button("Quit");
         quitter.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {

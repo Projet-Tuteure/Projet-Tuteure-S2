@@ -8,103 +8,147 @@ import javafx.scene.text.Text;
 public class UI extends Pane{
 
     private int hp;
-    private int score;
-    private Text scoreLbl;
-    private ImageView coinImg;
-    private Pane pvPane;
+    private int coin;
+    private Text coinLbl;
+    private Pane hpPane;
     private int blockSize;
     private int halfBlockSize;
     private Tilemap tilemap;
 
+    /**
+     * creates a ui with given tilemap
+     * @param tilemap
+     */
     public UI(Tilemap tilemap){
         this(tilemap,3,0);
     }
 
+    /**
+     * creates a ui with given tilemap hp and score value
+     * @param tilemap
+     * @param hp
+     * @param score
+     */
     public UI(Tilemap tilemap, int hp, int score){
         this.blockSize= tilemap.getBlockSide();
         this.halfBlockSize = blockSize/2;
         this.tilemap = tilemap;
         this.hp = hp;
-        this.score=score;
+        this.coin =score;
 
         initWidgets();
     }
 
+    /**
+     * initialize all ui components
+     */
     private void initWidgets(){
         int fontSize = 20;
         Font minecraftFont = Font.loadFont( Main.class.getClassLoader().getResourceAsStream("fonts/Minecraft.ttf"), fontSize);
 
-        // Création du compteur de pièces
         Pane scorePane = new Pane();
 
-        coinImg = new ImageView(new Image("img/coin.png"));
-        coinImg.setLayoutX(halfBlockSize-coinImg.getImage().getWidth()/2);
-        coinImg.setLayoutY(halfBlockSize-coinImg.getImage().getHeight()/2);
+        ImageView coinImg = new ImageView(new Image("img/coin.png"));
+        coinImg.setLayoutX(halfBlockSize - coinImg.getImage().getWidth()/2);
+        coinImg.setLayoutY(halfBlockSize - coinImg.getImage().getHeight()/2);
 
-        scoreLbl = new Text(Integer.toString(score));
-        scoreLbl.setLayoutX(halfBlockSize+coinImg.getImage().getWidth());
-        scoreLbl.setLayoutY(halfBlockSize+fontSize/2-2);
-        scoreLbl.setFont(minecraftFont);
-        scoreLbl.setFill(Color.WHITE);
+        coinLbl = new Text(Integer.toString(coin));
+        coinLbl.setLayoutX(halfBlockSize + coinImg.getImage().getWidth());
+        coinLbl.setLayoutY(halfBlockSize + fontSize/2 - 2);
+        coinLbl.setFont(minecraftFont);
+        coinLbl.setFill(Color.WHITE);
 
         scorePane.getChildren().add(coinImg);
-        scorePane.getChildren().add(scoreLbl);
-        pvPane = new Pane();
-        updatePv(pvPane);
-        getChildren().addAll(scorePane,pvPane);
+        scorePane.getChildren().add(coinLbl);
+        hpPane = new Pane();
+        updatePv(hpPane);
+        getChildren().addAll(scorePane, hpPane);
     }
 
-    public void updatePv(Pane pvPane){
+
+    /**
+     * update the given hpPane according to the hp
+     * @param hpPane the pane to update
+     */
+    public void updatePv(Pane hpPane){
         Image coeurTemplate = new Image("img/heart.png");
-        int yOrigin = blockSize*(tilemap.getNbBlockHeight()-1)+blockSize/2-(int)coeurTemplate.getHeight()/2;
+        int yOrigin = blockSize * (tilemap.getNbBlockHeight()-1) + blockSize/2 - (int)coeurTemplate.getHeight()/2;
         int xOrigin = 0;
-        pvPane.setLayoutX(xOrigin);
-        pvPane.setLayoutY(yOrigin);
-        pvPane.getChildren().clear();
+        hpPane.setLayoutX(xOrigin);
+        hpPane.setLayoutY(yOrigin);
+        hpPane.getChildren().clear();
 
         int imgToDraw = hp;
         for(int i = 0 ; i < imgToDraw ; i++){
             Image coeur = new Image("img/heart.png");
             ImageView coeurView = new ImageView(coeur);
-            pvPane.getChildren().add(coeurView);
+            hpPane.getChildren().add(coeurView);
             coeurView.setLayoutX(i*blockSize+blockSize/2-(int)coeurTemplate.getWidth()/2);
         }
     }
 
-    public void addPv(int i){
+    /**
+     * adds i hp and updates ui
+     * @param i number of pv to add
+     */
+    public void addHp(int i){
         hp+=i;
-        updatePv(pvPane);
+        updatePv(hpPane);
     }
 
-    public int getPv() {
+    /**
+     * @return the number of hp
+     */
+    public int getHp() {
         return hp;
     }
 
-    public void setPv(int hp) {
+    /**
+     * set hp to given hp
+     * @param hp the number of hp
+     */
+    public void setHp(int hp) {
         this.hp = hp;
-        updatePv(pvPane);
+        updatePv(hpPane);
     }
 
-    public void decrementPv() {
+    /**
+     * decrement hp and updates ui
+     */
+    public void decrementHp() {
         this.hp -= 1;
-        updatePv(pvPane);
+        updatePv(hpPane);
     }
 
-    public int getScore() {
-        return score;
+    /**
+     * @return number of coins in ui
+     */
+    public int getCoin() {
+        return coin;
     }
 
-    public void setScore(int score) {
-        this.score = score;
-        updateScore();
+    /**
+     * sets coin to given coin and updates ui
+     * @param coin the score
+     */
+    public void setCoin(int coin) {
+        this.coin = coin;
+        updateCoin();
     }
 
-    public void addToScore(int n){
-        score+=n;
-        updateScore();
+    /**
+     * add given n to coin
+     * @param n the number of coin to add
+     */
+    public void addToCoin(int n){
+        coin +=n;
+        updateCoin();
     }
 
-    private void updateScore() {
-        scoreLbl.setText(Integer.toString(score));
+    /**
+     * updates score's iu
+     */
+    private void updateCoin() {
+        coinLbl.setText(Integer.toString(coin));
     }
 }

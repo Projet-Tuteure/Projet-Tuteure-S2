@@ -9,7 +9,7 @@ public class Tilemap {
     final String pathToTexture = "/img/";
     final int nbTexture = 5;
 
-    int[][][] listeNiveaux = {
+    int[][][] levelList = {
 /*            {
                     {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
                     {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
@@ -29,13 +29,13 @@ public class Tilemap {
                     {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
                     {1,2,2,2,2,2,2,2,2,2,1,2,2,2,2,2,2,2,2,2,1},
                     {1,2,1,1,1,1,1,2,1,2,2,2,1,2,1,1,1,1,1,2,1},
-                    {1,2,2,2,1,2,2,2,1,1,1,1,1,2,2,2,1,2,2,2,1},
+                    {1,2,2,3,1,2,2,2,1,1,1,1,1,2,2,2,1,3,2,2,1},
                     {1,1,1,2,1,2,1,2,2,2,2,2,2,2,1,2,1,2,1,1,1},
                     {1,2,2,2,2,2,1,2,1,1,4,1,1,2,1,2,2,2,2,2,1},
                     {1,2,1,1,1,1,1,2,1,0,0,0,1,2,1,1,1,1,1,2,1},
-                    {1,2,2,2,2,2,2,3,1,1,1,1,1,2,2,2,2,2,2,2,1},
+                    {1,2,2,2,2,2,2,2,1,1,1,1,1,2,2,2,2,2,2,2,1},
                     {1,2,1,1,1,1,2,1,1,2,0,2,1,1,2,1,1,1,1,2,1},
-                    {1,2,2,2,2,1,2,1,2,2,1,2,2,1,2,1,2,2,2,2,1},
+                    {1,2,2,2,3,1,2,1,2,2,1,2,2,1,2,1,3,2,2,2,1},
                     {1,2,1,1,2,1,2,1,2,1,1,1,2,1,2,1,2,1,1,2,1},
                     {1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1},
                     {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
@@ -74,7 +74,7 @@ public class Tilemap {
 
     int nbBlockWidth;
     int nbBlockHeight;
-    int niveauCourant;
+    int currentLevel;
     Canvas canvas;
     GraphicsContext graphicsContext;
     Image[] pattern = new Image[nbTexture];
@@ -83,35 +83,47 @@ public class Tilemap {
     ArrayList<Integer> floorBlocksZombie = new ArrayList<Integer>();
 
 
+    /**
+     * Constructor of the tilemap given the number of the map
+     * @param nMap the number of the map
+     */
     Tilemap(int nMap) {
-        this.map = listeNiveaux[nMap];
-        this.nbBlockWidth = listeNiveaux[nMap][0].length;
-        this.nbBlockHeight = listeNiveaux[nMap].length;
+        this.map = levelList[nMap];
+        this.nbBlockWidth = levelList[nMap][0].length;
+        this.nbBlockHeight = levelList[nMap].length;
         this.canvas = new Canvas(BLOCKSIDE * nbBlockWidth, BLOCKSIDE * nbBlockHeight);
         this.graphicsContext = canvas.getGraphicsContext2D();
-        this.niveauCourant = nMap;
+        this.currentLevel = nMap;
         loadImages(this.pattern);
 
-        //Initialisation de la liste de blocks sur lesquels le joueur peut marcher
+        //players can walk on these
         floorBlocks.add(0);
         floorBlocks.add(2);
         floorBlocks.add(3);
-        //Initialisation de la liste de blocks sur lesquels le zombie peut marcher
+        //zombies can walk on these
         floorBlocksZombie.add(0);
         floorBlocksZombie.add(2);
         floorBlocksZombie.add(3);
         floorBlocksZombie.add(4);
     }
 
-    public void loadImages(Image[] tableauImage){
-        for (int i=0; i<this.pattern.length; i++){
-            this.pattern[i] = new Image(pathToTexture+String.valueOf(i)+".png");
-        }
+    /**
+     * Load all images
+     * @param tabImage tap of images
+     */
+    public void loadImages(Image[] tabImage){
+        for (int i = 0; i < this.pattern.length; i++)
+            this.pattern[i] = new Image(this.pathToTexture+String.valueOf(i)+".png");
     }
 
-    public void display(int[][] map, GraphicsContext gc) {
-        for (int i = 0; i < map[0].length; i++) {
-            for (int j = 0; j < map.length; j++) {
+    /**
+     * Draw the map in the graphicsContext
+     * @param tilemap map to draw
+     * @param gc graphic content to use
+     */
+    public void display(int[][] tilemap, GraphicsContext gc) {
+        for (int i = 0; i < tilemap[0].length; i++) {
+            for (int j = 0; j < tilemap.length; j++) {
                 gc.drawImage(pattern[this.map[j][i]], i  * BLOCKSIDE, j * BLOCKSIDE);
             }
         }
@@ -133,7 +145,7 @@ public class Tilemap {
         return canvas;
     }
 
-    public int getValueOf(int x ,int y){ return listeNiveaux[this.niveauCourant][x][y];}
+    public int getValueOf(int x ,int y){ return levelList[this.currentLevel][x][y];}
 
     public int getTileX(int x){
         return x/BLOCKSIDE;
@@ -144,17 +156,28 @@ public class Tilemap {
     }
 
     public int getTileFromXYTile(int xTile, int yTile){
-        return this.listeNiveaux[this.niveauCourant][yTile][xTile];
+        return this.levelList[this.currentLevel][yTile][xTile];
     }
 
     public int getTileFromXY(int x, int y){
         return getTileFromXYTile(getTileX(x),getTileY(y));
     }
 
-    public int[][] getMap(int niveau) {
-        return this.listeNiveaux[niveau];
+    /**
+     * Return tab of map
+     * @param level of map
+     * @return map of desired level
+     */
+    public int[][] getMap(int level) {
+        return this.levelList[level];
     }
 
+    /**
+     * 
+     * @param x position X
+     * @param y position Y
+     * @return boolean if is in the center of block
+     */
     public boolean isCenter(int x, int y){
         if (x%(BLOCKSIDE/2)==0 && y%(BLOCKSIDE/2)==0 && x%BLOCKSIDE!=0 && y%BLOCKSIDE!=0){
             return true;
@@ -162,33 +185,19 @@ public class Tilemap {
         return false;
     }
 
+    /**
+     * Number of coins in the tilemap
+     * @return number of coins in the til
+     */
     public int getNumberOfCoin(){
-        int compteur =0;
-        for(int i =0;i< listeNiveaux[this.niveauCourant].length;i++){
-            for(int l =0;l< listeNiveaux[this.niveauCourant][i].length;l++){
+        int counter =0;
+        for(int i = 0; i< levelList[this.currentLevel].length; i++){
+            for(int l = 0; l< levelList[this.currentLevel][i].length; l++){
                 if(this.getValueOf(i,l)==2){
-                    compteur++;
+                    counter++;
                 }
             }
         }
-        return  compteur;
-    }
-
-    @Override
-    public String toString() {
-        return "Tilemap{" +
-                "BLOCKSIDE=" + BLOCKSIDE +
-                ", pathToTexture='" + pathToTexture + '\'' +
-                ", nbTexture=" + nbTexture +
-                ", listeNiveaux=" + Arrays.toString(listeNiveaux) +
-                ", nbBlockWidth=" + nbBlockWidth +
-                ", nbBlockHeight=" + nbBlockHeight +
-                ", niveauCourant=" + niveauCourant +
-                ", canvas=" + canvas +
-                ", graphicsContext=" + graphicsContext +
-                ", pattern=" + Arrays.toString(pattern) +
-                ", map=" + Arrays.toString(map) +
-                ", floorBlocks=" + floorBlocks +
-                '}';
+        return counter;
     }
 }

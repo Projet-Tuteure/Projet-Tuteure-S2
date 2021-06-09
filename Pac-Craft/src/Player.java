@@ -19,31 +19,33 @@ public class Player extends Sprite{
     private MediaPlayer runningPlayer;
 
     /**
-     * Generate a new Player
+     * Generates a new Player
      */
     public Player(UI ui){
         super("img/steve.png",420, 0, 12,400,320,1,40,40, true);
         this.hp = 3;
         this.isSuperMode = false;
         this.superPowerTime = 10000; // 10 secondes
-        this.superPowerSpeed = super.getDefaultSpeed()*2;
+        this.superPowerSpeed = super.getDefaultSpeed() * 2;
         this.ui = ui;
         // Sound
-        this.walkingPlayer = Son.getPlayer("walking");
+        this.walkingPlayer = Sound.getPlayer("walking");
         walkingPlayer.setOnEndOfMedia(new Runnable() {
             @Override
             public void run() {
                 walkingPlayer.seek(new Duration(0));
             }
         });
-        this.runningPlayer = Son.getPlayer("running");
+        this.runningPlayer = Sound.getPlayer("running");
     }
 
-    /** Generate a new Player
-     * @param posX
-     * @param posY
-     * @param width
-     * @param height
+    /**
+     * Generates a new Player at given positon and connects it to given ui
+     * @param posX the x position
+     * @param posY the y position
+     * @param width the width of the player
+     * @param height the height of the player
+     * @param ui the ui to connect
      */
     public Player(int posX, int posY, int width, int height, UI ui){
         super("img/steve.png", 850,0, 3, posX, posY, 0.5, width, height, true);
@@ -55,11 +57,13 @@ public class Player extends Sprite{
     }
 
     /**
-     * Appelle les différentes fonctions gérant l'affichage du sprite à la prochaine frame
-     * @param gc GraphicContext dans lequel dessiner
-     * @param t Temps écoulé entre les 2 frame
+     * Manages the frame
+     * @param tilemap the tilemap
+     * @param gc GraphicContext for draw
+     * @param time Time elapsed between the 2 frames
+     * @param player the player
      */
-    public void nextFrame(Tilemap tilemap,GraphicsContext gc, double t, Player player){
+    public void nextFrame(Tilemap tilemap,GraphicsContext gc, double time, Player player){
         if (tilemap.isCenter(this.getCenterPosX(), this.getCenterPosY())){
             if (Collision.notCollidingWithWalls(this, tilemap)){
                 if(player.isSuperMode()){
@@ -78,17 +82,17 @@ public class Player extends Sprite{
                     if(walkingPlayer.getStatus().equals(MediaPlayer.Status.PLAYING))
                         walkingPlayer.stop();
                 }
-                this.currentDirection = Sprite.Direction.STATIQUE;
+                this.currentDirection = Sprite.Direction.STATIC;
             }
         }
 
-        this.update(t);
+        this.updatePositionCanvas(time);
 
         this.render(gc);
     }
 
     /**
-     * stops every sounds the player is emitting
+     * Stops every sounds the player is emitting
      */
     public void stopSounds(){
         if(walkingPlayer.getStatus().equals(MediaPlayer.Status.PLAYING))
@@ -154,28 +158,28 @@ public class Player extends Sprite{
     }
 
     /**
-     * Retourne le nombre de pièce possédées
-     * @return
+     * Return the number of coins owned
+     * @return number of coins
      */
     public int getNbPiece() {
         return nbPiece;
     }
 
     /**
-     * Définit le nombre de pièces possédées
-     * @param nbPiece
+     * Defined the number of coins owned
+     * @param nbPiece defined number of coins
      */
     public void setNbPiece(int nbPiece) {
         this.nbPiece = nbPiece;
-        this.ui.setScore(nbPiece);
+        this.ui.setCoin(nbPiece);
     }
 
     /**
-     * Ajoute une pièce au joueur
+     * Add coins to player
      */
     public void addPiece(){
         this.nbPiece += 1;
-        this.ui.addToScore(1);
+        this.ui.addToCoin(1);
     }
 
     /**
@@ -209,23 +213,24 @@ public class Player extends Sprite{
     public void dead(){
         this.isSuperMode = false;
         super.setAlive(false);
-
+        stopSounds();
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
                 respawn(SPAWNX,SPAWNY);
-                Player.super.setNewDirection(Direction.HAUT);
+                Player.super.setNewDirection(Direction.UP);
                 hp--;
             }
         }, 1300);
 
-        this.ui.decrementPv();
-        Son.getPlayer("minus").play();
+        this.ui.decrementHp();
+        Sound.getPlayer("minus").play();
     }
 
-    /** Display the animation of player dying
-     * @param gc the canva to draw in
+    /**
+     * Display the animation of player dying
+     * @param gc the canvas to draw in
      */
     public void animationKilled(GraphicsContext gc){
         super.setDyingAnimation(gc,0, 0, 6, 1);

@@ -8,12 +8,12 @@ import javafx.util.Duration;
 
 public abstract class Sprite{
     enum Direction {
-        HAUT,
-        DROITE,
-        BAS,
-        GAUCHE,
-        STATIQUE
-    };
+        UP,
+        RIGHT,
+        DOWN,
+        LEFT,
+        STATIC
+    }
 
     final int SPRITEWIDTH = 40;
 
@@ -34,15 +34,16 @@ public abstract class Sprite{
     private double index;
     private Timeline dyingAnimation;
 
-    /** generate a new Sprite
+    /**
+     * generate a new Sprite
      * @param initialXSpriteAlive
      * @param initialYSpriteAlive
-     * @param nbImage
-     * @param posX
-     * @param posY
-     * @param defaultSpeed
-     * @param width
-     * @param height
+     * @param nbImage number of image for character
+     * @param posX position X
+     * @param posY position Y
+     * @param defaultSpeed default speed for character
+     * @param width width of picture
+     * @param height height of picture
      */
     public Sprite(String path, int initialXSpriteAlive, int initialYSpriteAlive, int nbImage, int posX, int posY, double defaultSpeed, int width, int height, boolean killable){
         this.image = new Image(path);
@@ -55,8 +56,8 @@ public abstract class Sprite{
         this.actualSpeed = defaultSpeed;
         this.isAlive = true;
         this.killable = killable;
-        this.newDirection = Direction.HAUT;
-        this.currentDirection = Direction.STATIQUE;
+        this.newDirection = Direction.UP;
+        this.currentDirection = Direction.STATIC;
         this.width = width;
         this.height = height;
         this.index = 0;
@@ -224,7 +225,7 @@ public abstract class Sprite{
     }
 
     /**
-     *
+     * Set index
      * @param index
      */
     public void setIndex(double index) {
@@ -232,63 +233,70 @@ public abstract class Sprite{
     }
 
     /**
-     * @return double Height of Sprite
+     * Return height of Sprite
+     * @return double height of Sprite
      */
-    public double getHeight() {
+    public double getHeight(){
         return this.height;
     }
 
     /**
+     * Set height of Sprite
      * @param height of Sprite
      */
     public void setHeight(double height) {
         this.height = height;
     }
 
+    /**
+     * Return the current direction of character
+     * @return current direction
+     */
     public Sprite.Direction getCurrentDirection(){
         return this.currentDirection;
     }
 
     /**
-     * retourne le centre du sprite en X
-     * @return
+     * Return the center of the sprite to X
+     * @return Center of position character
      */
     public int getCenterPosX(){
         return (int) (this.positionX+this.SPRITEWIDTH /2);
     }
 
     /**
-     * Retourne le centre du sprite en Y
-     * @return
+     * Return the center of the sprite to Y
+     * @return Center of position character
      */
     public int getCenterPosY(){
         return (int) (this.positionY+this.SPRITEWIDTH /2);
     }
 
     /**
-     * Définit la nouvelle direction du sprite
-     * @param direction
+     * Defines the new direction of the sprite
+     * @param direction new direction
      */
     public void setNewDirection(Direction direction){
         this.newDirection = direction;
     }
 
-    /** Used to update the Sprite's position in the canva
+    /**
+     * Used to update the Sprite's position in the canvas
      * @param t double time passed in the AnimationTimer
      */
-    public void update(double t){
-        this.index = (int) ((t%(this.nbImage * 0.1 )) / 0.1);
+    public void updatePositionCanvas(double t){
+        this.index = (int) ((t % (this.nbImage * 0.1 )) / 0.1);
         switch (this.currentDirection){
-            case HAUT:
+            case UP:
                 this.positionY -=this.actualSpeed;
                 break;
-            case BAS:
+            case DOWN:
                 this.positionY +=this.actualSpeed;
                 break;
-            case DROITE:
+            case RIGHT:
                 this.positionX +=this.actualSpeed;
                 break;
-            case GAUCHE:
+            case LEFT:
                 this.positionX -=this.actualSpeed;
                 break;
             default:
@@ -296,29 +304,30 @@ public abstract class Sprite{
         }
     }
 
-    /** Display the Sprite to the Canvas
+    /**
+     * Display the Sprite to the Canvas
      * @param gc GraphicsContext the canvas to draw in
      */
-    public void render(GraphicsContext gc) { // à modifier ici pour les collisions
+    public void render(GraphicsContext gc){ // à modifier ici pour les collisions
         double indexX = this.width * this.index;;
-        if (this.currentDirection==Direction.STATIQUE && isAlive){
+        if (this.currentDirection == Direction.STATIC && isAlive)
             gc.drawImage(this.image, indexX, (this.newDirection.ordinal()+this.initialYSpriteAlive) * this.height, this.width, this.height, this.positionX, this.positionY, this.width, this.height);
-        } else if (this.currentDirection!=Direction.STATIQUE && isAlive){
+        else if (this.currentDirection!=Direction.STATIC && isAlive)
             gc.drawImage(this.image, indexX, (this.currentDirection.ordinal()+this.initialYSpriteAlive+4) * this.height ,this.width, this.height, this.positionX,this.positionY, this.width,this.height);
-        }
     }
 
     /**
-     * Appelle les différentes fonctions gérant l'affichage du sprite à la prochaine frame
-     * @param gc GraphicContext dans lequel dessiner
-     * @param t Temps écoulé entre les 2 frame
+     * Calls the different functions managing the display of the sprite at the next frame
+     * @param gc GraphicContext for draw
+     * @param time Time elapsed between the 2 frames
      */
-    public abstract void nextFrame(Tilemap tilemap, GraphicsContext gc, double t, Player player);
+    public abstract void nextFrame(Tilemap tilemap, GraphicsContext gc, double time, Player player);
 
-    /** Useful for the collision detection
+    /**
+     * Useful for the collision detection
      * @return Rectangle2D a hit box of the Sprite
      */
-    public Rectangle2D getBoundary() {
+    public Rectangle2D getBoundary(){
         return new Rectangle2D(this.positionX,this.positionY,this.width,this.height);
     }
 
@@ -326,11 +335,12 @@ public abstract class Sprite{
      * @param s Sprite to compare position with
      * @return boolean True if collide, False if not
      */
-    public boolean isColliding(Sprite s) {
+    public boolean isColliding(Sprite s){
         return s.getBoundary().intersects(this.getBoundary()) && this.isAlive;
     }
 
-    /** Respawn the Sprite to (X,Y) position with update characteristics
+    /**
+     * Respawn the Sprite to (X,Y) position with update characteristics
      * @param posX int X position to respawn
      * @param posY int Y position to respawn
      */
@@ -351,13 +361,13 @@ public abstract class Sprite{
     /**
      * @return Timeline the dying animation
      */
-    public Timeline getDyingAnimation() {
+    public Timeline getDyingAnimation(){
         return this.dyingAnimation;
     }
 
     /**
-     * animation of dead
-     * @param gc the canva to draw in
+     * Animation of dead
+     * @param gc the canvas to draw in
      * @param yPositionOfDyingImageInSpriteSheet int the initial position of the dying image in the Sprite's sheet
      * @param firstImage int the initial index of dying image
      * @param lastImage int the last index of dying image
@@ -373,10 +383,15 @@ public abstract class Sprite{
             this.dyingAnimation.getKeyFrames().add(new KeyFrame(Duration.millis(i * 100 + 100), (ActionEvent event) -> {
                 gc.clearRect(this.positionX,this.positionY,this.width,this.height);
                 gc.drawImage(imageWood, this.positionX, this.positionY, this.width, this.height);
-                gc.drawImage(imageBlood, this.width*finalI, yPositionOfDyingImageInSpriteSheet, this.width, this.height, this.positionX, this.positionY, this.width, this.height);
+                gc.drawImage(imageBlood, this.width * finalI, yPositionOfDyingImageInSpriteSheet, this.width, this.height, this.positionX, this.positionY, this.width, this.height);
             }));
         }
     }
+
+    /**
+     * Methode to set character dead
+     */
+    public abstract void dead();
 
     /**
      * Reset speed of Sprite with default
