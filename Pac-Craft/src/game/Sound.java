@@ -1,3 +1,5 @@
+package game;
+
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 

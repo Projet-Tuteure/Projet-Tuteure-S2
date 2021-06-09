@@ -1,6 +1,8 @@
+package menu;
+
+import game.Controller;
+import game.Sound;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -14,22 +16,17 @@ import javafx.util.Duration;
 
 public class Launcher {
     private Scene mainMenu;
-    private final Main main;
+    private final Controller controller;
     private static MediaPlayer musicPlayer;
 
     /**
      * creates a launcher with given main
-     * @param main the window to launch
+     * @param controller the window to launch
      */
-    public Launcher(Main main){
-        this.main = main;
+    public Launcher(Controller controller){
+        this.controller = controller;
         musicPlayer = Sound.getPlayer("Sweden");
-        musicPlayer.setOnEndOfMedia(new Runnable() {
-            @Override
-            public void run() {
-                musicPlayer.seek(new Duration(0));
-            }
-        });
+        musicPlayer.setOnEndOfMedia(() -> musicPlayer.seek(new Duration(0)));
         musicPlayer.setStartTime(new Duration(1000*15));
         musicPlayer.setVolume(1);
     }
@@ -51,21 +48,13 @@ public class Launcher {
         ImageView titleView = new ImageView(title);
 
         Button play = new Button("Play");
-        play.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                musicPlayer.stop();
-                main.newGame(stage);
-            }
+        play.setOnAction(event -> {
+            musicPlayer.stop();
+            controller.newGame(stage);
         });
 
         Button quitter = new Button("Quit");
-        quitter.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                Platform.exit();
-            }
-        });
+        quitter.setOnAction(event -> Platform.exit());
 
         play.getStyleClass().add("button");
         quitter.getStyleClass().add("button");
@@ -74,10 +63,10 @@ public class Launcher {
         titleBox.getStyleClass().add("title-box");
 
         VBox menuBox = new VBox(titleBox,play,quitter);
-        menuBox.setSpacing(HEIGHT/21);
-        menuBox.setPadding(new Insets(HEIGHT/7));
+        menuBox.setSpacing(24);
+        menuBox.setPadding(new Insets(74));
         menuBox.getStyleClass().add("main-box");
-        BackgroundImage bgimg = new BackgroundImage(
+        BackgroundImage backgroundImage = new BackgroundImage(
                 new Image("img/background.jpg",WIDTH,HEIGHT,false,false),
                 BackgroundRepeat.NO_REPEAT,
                 BackgroundRepeat.NO_REPEAT,
@@ -85,11 +74,11 @@ public class Launcher {
                 BackgroundSize.DEFAULT
         );
         VBox mainBox = new VBox(menuBox);
-        mainBox.setBackground(new Background(bgimg));
+        mainBox.setBackground(new Background(backgroundImage));
 
         mainMenu = new Scene(mainBox, WIDTH, HEIGHT);
 
-        Font.loadFont( Main.class.getClassLoader().getResourceAsStream( "fonts/Minecraft.ttf"), 20);
+        Font.loadFont( Controller.class.getClassLoader().getResourceAsStream( "fonts/Minecraft.ttf"), 20);
         mainMenu.getStylesheets().add("styles/style.css");
 
         return mainMenu;
@@ -97,9 +86,9 @@ public class Launcher {
 
     @Override
     public String toString() {
-        return "Launcher{" +
+        return "menu.Launcher{" +
                 "mainMenu=" + mainMenu +
-                ", main=" + main +
+                ", main=" + controller +
                 '}';
     }
 }

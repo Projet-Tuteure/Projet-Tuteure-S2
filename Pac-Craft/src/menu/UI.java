@@ -1,3 +1,7 @@
+package menu;
+
+import config.Tilemap;
+import game.Controller;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
@@ -11,30 +15,30 @@ public class UI extends Pane{
     private int coin;
     private Text coinLbl;
     private Pane hpPane;
-    private int blockSize;
-    private int halfBlockSize;
-    private Tilemap tilemap;
+    private final int blockSize;
+    private final int halfBlockSize;
+    private final Tilemap tilemap;
 
     /**
      * creates a ui with given tilemap
-     * @param tilemap
+     * @param tilemap the tilemap
      */
     public UI(Tilemap tilemap){
         this(tilemap,3,0);
     }
 
     /**
-     * creates a ui with given tilemap hp and score value
-     * @param tilemap
-     * @param hp
-     * @param score
+     * creates a ui with given tilemap hp and coin value
+     * @param tilemap the tilemap
+     * @param hp the hp
+     * @param coin the coin
      */
-    public UI(Tilemap tilemap, int hp, int score){
+    public UI(Tilemap tilemap, int hp, int coin){
         this.blockSize = tilemap.getBlockSide();
         this.halfBlockSize = blockSize/2;
         this.tilemap = tilemap;
         this.hp = hp;
-        this.coin = score;
+        this.coin = coin;
 
         initWidgets();
     }
@@ -44,7 +48,7 @@ public class UI extends Pane{
      */
     private void initWidgets(){
         int fontSize = 20;
-        Font minecraftFont = Font.loadFont( Main.class.getClassLoader().getResourceAsStream("fonts/Minecraft.ttf"), fontSize);
+        Font minecraftFont = Font.loadFont( Controller.class.getClassLoader().getResourceAsStream("fonts/Minecraft.ttf"), fontSize);
 
         Pane scorePane = new Pane();
 
@@ -54,7 +58,7 @@ public class UI extends Pane{
 
         coinLbl = new Text(Integer.toString(coin));
         coinLbl.setLayoutX(halfBlockSize + coinImg.getImage().getWidth());
-        coinLbl.setLayoutY(halfBlockSize + fontSize/2 - 2);
+        coinLbl.setLayoutY((fontSize >> 1) + halfBlockSize - 2);
         coinLbl.setFont(minecraftFont);
         coinLbl.setFill(Color.WHITE);
 
@@ -83,33 +87,8 @@ public class UI extends Pane{
             Image coeur = new Image("img/heart.png");
             ImageView coeurView = new ImageView(coeur);
             hpPane.getChildren().add(coeurView);
-            coeurView.setLayoutX(i * blockSize + blockSize/2 - (int) coeurTemplate.getWidth()/2);
+            coeurView.setLayoutX(((i * blockSize) + (blockSize >> 1)) - ((int) coeurTemplate.getWidth() / 2));
         }
-    }
-
-    /**
-     * adds i hp and updates ui
-     * @param i number of pv to add
-     */
-    public void addHp(int i){
-        hp += i;
-        updatePv(hpPane);
-    }
-
-    /**
-     * @return the number of hp
-     */
-    public int getHp() {
-        return hp;
-    }
-
-    /**
-     * set hp to given hp
-     * @param hp the number of hp
-     */
-    public void setHp(int hp) {
-        this.hp = hp;
-        updatePv(hpPane);
     }
 
     /**
@@ -147,7 +126,7 @@ public class UI extends Pane{
 
     @Override
     public String toString() {
-        return "UI{" +
+        return "menu.UI{" +
                 "hp=" + hp +
                 ", coin=" + coin +
                 ", coinLbl=" + coinLbl +

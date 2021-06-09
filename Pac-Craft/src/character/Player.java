@@ -1,6 +1,12 @@
+package character;
+
+import config.Collision;
+import config.Tilemap;
+import game.Sound;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
+import menu.UI;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -11,14 +17,14 @@ public class Player extends Entity {
     private int hp;
     private int coinNumber;
     private boolean isSuperMode;
-    private int superPowerDuration;
-    private double superPowerSpeed;
-    private UI ui;
-    private MediaPlayer walkingPlayer;
-    private MediaPlayer runningPlayer;
+    private final int superPowerDuration;
+    private final double superPowerSpeed;
+    private final UI ui;
+    private final MediaPlayer walkingPlayer;
+    private final MediaPlayer runningPlayer;
 
     /**
-     * Generates a new Player
+     * Generates a new character.Player
      */
     public Player(UI ui){
         super("img/steve.png",420, 0, 12,400,320,1,40,40, true);
@@ -28,14 +34,9 @@ public class Player extends Entity {
         this.superPowerSpeed = super.getDefaultSpeed() * 2;
         this.ui = ui;
 
-        // Sound
+        // game.Sound
         this.walkingPlayer = Sound.getPlayer("walking");
-        walkingPlayer.setOnEndOfMedia(new Runnable() {
-            @Override
-            public void run() {
-                walkingPlayer.seek(new Duration(0));
-            }
-        });
+        walkingPlayer.setOnEndOfMedia(() -> walkingPlayer.seek(new Duration(0)));
         this.runningPlayer = Sound.getPlayer("running");
     }
 
@@ -46,35 +47,38 @@ public class Player extends Entity {
      * @param time Time elapsed between the 2 frames
      * @param player the player
      */
-    public void nextFrame(Tilemap tilemap,GraphicsContext gc, double time, Player player){
-        // Check if Player
-        if (tilemap.isCenter(this.getCenterPosX(), this.getCenterPosY())){
-            // Check if new direction collides
-            if (Collision.notCollidingWithWalls(this, tilemap)){
-                // Handle walking / running sound
-                if(player.isSuperMode()){
-                    if(!runningPlayer.getStatus().equals(MediaPlayer.Status.PLAYING))
-                        runningPlayer.play();
-                }else{
-                    if(!walkingPlayer.getStatus().equals(MediaPlayer.Status.PLAYING))
-                        walkingPlayer.play();
+    public void nextFrame(Tilemap tilemap, GraphicsContext gc, double time, Player player){
+        if(!isAlive()){
+            this.currentDirection = Direction.STATIC;
+        }else {
+            // Check if character.Player
+            if (tilemap.isCenter(this.getCenterPosX(), this.getCenterPosY())) {
+                // Check if new direction collides
+                if (Collision.notCollidingWithWalls(this, tilemap)) {
+                    // Handle walking / running sound
+                    if (player.isSuperMode()) {
+                        if (!runningPlayer.getStatus().equals(MediaPlayer.Status.PLAYING))
+                            runningPlayer.play();
+                    } else {
+                        if (!walkingPlayer.getStatus().equals(MediaPlayer.Status.PLAYING))
+                            walkingPlayer.play();
+                    }
+                    // update direction
+                    this.currentDirection = this.newDirection;
+                } else {
+                    // Stop walking / running sound
+                    if (player.isSuperMode()) {
+                        if (runningPlayer.getStatus().equals(MediaPlayer.Status.PLAYING))
+                            runningPlayer.stop();
+                    } else {
+                        if (walkingPlayer.getStatus().equals(MediaPlayer.Status.PLAYING))
+                            walkingPlayer.stop();
+                    }
+                    // Stop the player movements
+                    this.currentDirection = Direction.STATIC;
                 }
-                // update direction
-                this.currentDirection = this.newDirection;
-            } else {
-                // Stop walking / running sound
-                if(player.isSuperMode()){
-                    if(runningPlayer.getStatus().equals(MediaPlayer.Status.PLAYING))
-                        runningPlayer.stop();
-                }else{
-                    if(walkingPlayer.getStatus().equals(MediaPlayer.Status.PLAYING))
-                        walkingPlayer.stop();
-                }
-                // Stop the player movements
-                this.currentDirection = Direction.STATIC;
             }
         }
-
         this.updatePositionCanvas(time);
 
         this.render(gc);
@@ -189,15 +193,6 @@ public class Player extends Entity {
     }
 
     /**
-     * Runs player dying animation
-     * @param gc the canvas to draw in
-     */
-    public void animationKilled(GraphicsContext gc){
-        super.setDyingAnimation(gc,0, 0, 6, 1);
-        super.getDyingAnimation().play();
-    }
-
-    /**
      * Puts player back to initial status
      */
     @Override
@@ -209,7 +204,7 @@ public class Player extends Entity {
 
     @Override
     public String toString() {
-        return "Player{" +
+        return "character.Player{" +
                 "SPRITEWIDTH=" + SPRITEWIDTH +
                 ", newDirection=" + newDirection +
                 ", currentDirection=" + currentDirection +

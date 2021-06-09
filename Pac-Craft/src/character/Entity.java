@@ -1,3 +1,6 @@
+package character;
+
+import config.Tilemap;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
@@ -10,18 +13,19 @@ public abstract class Entity {
 
     final int SPRITEWIDTH = 40;
 
-    private Image image;
-    private int initialXEntityAlive;
+    private final Image image;
+    private final Image dyingImage;
+    private final int initialXEntityAlive;
     private int initialYEntityAlive;
-    private int nbImage;
+    private final int nbImage;
     private double positionX;
     private double positionY;
-    private double defaultSpeed;
+    private final double defaultSpeed;
     private double actualSpeed;
     private boolean isAlive;
     private boolean killable;
-    private double width;
-    private double height;
+    private final double width;
+    private final double height;
     private double index;
     private Timeline dyingAnimation;
     Direction newDirection;
@@ -30,8 +34,8 @@ public abstract class Entity {
     /**
      * Generates a new Entities
      * @param path path to image
-     * @param initialXEntityAlive
-     * @param initialYEntityAlive
+     * @param initialXEntityAlive initial x entity alive
+     * @param initialYEntityAlive initial x entity alive
      * @param nbImage number of image for character
      * @param posX position X
      * @param posY position Y
@@ -42,6 +46,7 @@ public abstract class Entity {
      */
     public Entity(String path, int initialXEntityAlive, int initialYEntityAlive, int nbImage, int posX, int posY, double defaultSpeed, int width, int height, boolean killable){
         this.image = new Image(path);
+        this.dyingImage = new Image("img/blood.png");
         this.nbImage = nbImage;
         this.initialXEntityAlive = initialXEntityAlive;
         this.initialYEntityAlive = initialYEntityAlive;
@@ -59,15 +64,15 @@ public abstract class Entity {
     }
 
     /**
-     * Sets the origin Y coordinate of the Entity when entity's alive
-     * @param initialYEntityAlive
+     * Sets the origin Y coordinate of the character.Entity when entity's alive
+     * @param initialYEntityAlive initial x entity alive
      */
     public void setInitialYEntityAlive(int initialYEntityAlive) {
         this.initialYEntityAlive = initialYEntityAlive;
     }
 
     /**
-     * @return X position of Entity
+     * @return X position of character.Entity
      */
     public double getPositionX() {
         return this.positionX;
@@ -82,14 +87,14 @@ public abstract class Entity {
     }
 
     /**
-     * @return Y position of Entity
+     * @return Y position of character.Entity
      */
     public double getPositionY() {
         return this.positionY;
     }
 
     /**
-     * Sets the Y position of Entity
+     * Sets the Y position of character.Entity
      * @param positionY Y position
      */
     public void setPositionY(double positionY) {
@@ -97,7 +102,7 @@ public abstract class Entity {
     }
 
     /**
-     * @return double default speed of Entity
+     * @return double default speed of character.Entity
      */
     public double getDefaultSpeed() {
         return this.defaultSpeed;
@@ -105,10 +110,14 @@ public abstract class Entity {
 
     /**
      * Sets the Entities speed to given actualSpeed
-     * @param actualSpeed the speed at which the Entity goes
+     * @param actualSpeed the speed at which the character.Entity goes
      */
     public void setActualSpeed(double actualSpeed) {
         this.actualSpeed = actualSpeed;
+    }
+
+    public boolean isAlive(){
+        return this.isAlive;
     }
 
     /**
@@ -135,7 +144,7 @@ public abstract class Entity {
     }
 
     /**
-     * @return width of the Entity
+     * @return width of the character.Entity
      */
     public double getWidth() {
         return this.width;
@@ -150,7 +159,7 @@ public abstract class Entity {
     }
 
     /**
-     * Return the center of the Entity to X
+     * Return the center of the character.Entity to X
      * @return Center of position character
      */
     public int getCenterPosX(){
@@ -158,7 +167,7 @@ public abstract class Entity {
     }
 
     /**
-     * Return the center of the Entity to Y
+     * Return the center of the character.Entity to Y
      * @return Center of position character
      */
     public int getCenterPosY(){
@@ -166,7 +175,7 @@ public abstract class Entity {
     }
 
     /**
-     * Sets the new direction of the Entity
+     * Sets the new direction of the character.Entity
      * @param direction new direction
      */
     public void setNewDirection(Direction direction){
@@ -174,7 +183,7 @@ public abstract class Entity {
     }
 
     /**
-     * Update the Entity's position in the canvas
+     * Update the character.Entity's position in the canvas
      * @param t time elapsed in AnimationTimer
      */
     public void updatePositionCanvas(double t){
@@ -198,7 +207,7 @@ public abstract class Entity {
     }
 
     /**
-     * Display the Entity to the Canvas
+     * Display the character.Entity to the Canvas
      * @param gc canvas to draw in
      */
     public void render(GraphicsContext gc){
@@ -207,6 +216,7 @@ public abstract class Entity {
             gc.drawImage(this.image, indexX, (this.newDirection.ordinal()+this.initialYEntityAlive) * this.height, this.width, this.height, this.positionX, this.positionY, this.width, this.height);
         else if (this.currentDirection != Direction.STATIC && isAlive)
             gc.drawImage(this.image, indexX, (this.currentDirection.ordinal()+this.initialYEntityAlive+4) * this.height ,this.width, this.height, this.positionX,this.positionY, this.width,this.height);
+        else gc.drawImage(this.dyingImage,indexX,0,this.width, this.height, this.positionX,this.positionY, this.width,this.height);
     }
 
     /**
@@ -218,10 +228,10 @@ public abstract class Entity {
 
     /**
      * Gets gitbox boundaries
-     * @return Rectangle2D a hit box of the Entity
+     * @return Rectangle2D a hit box of the character.Entity
      */
     public Rectangle2D getBoundary(){
-        return new Rectangle2D(this.positionX,this.positionY,this.width,this.height);
+        return new Rectangle2D(this.positionX,this.positionY,this.width/1.5,this.height/1.5);
     }
 
     /**
@@ -233,7 +243,7 @@ public abstract class Entity {
     }
 
     /**
-     * Respawn the Entity to (X,Y) position with updated characteristics
+     * Respawn the character.Entity to (X,Y) position with updated characteristics
      * @param posX int X position to respawn
      * @param posY int Y position to respawn
      */
@@ -253,21 +263,21 @@ public abstract class Entity {
     /**
      * Sets dying animation of entity
      * @param gc the canvas to draw in
-     * @param yPositionOfDyingImageInEntitySheet int the initial position of the dying image in the Entity's sheet
+     * @param yPositionOfDyingImageInEntitySheet int the initial position of the dying image in the character.Entity's sheet
      * @param firstImage int the initial index of dying image
      * @param lastImage int the last index of dying image
      * @param nbRepeat int number of time to repeat the animation
      */
     public void setDyingAnimation(GraphicsContext gc, int yPositionOfDyingImageInEntitySheet, int firstImage, int lastImage, int nbRepeat){
-        Image imageWood = new Image("img/texture-0.png");
+        //Image imageWood = new Image("img/texture-0.png");
         Image imageBlood = new Image("img/blood.png");
         this.dyingAnimation = new Timeline();
         this.dyingAnimation.setCycleCount(nbRepeat);
         for (int i = firstImage; i < lastImage; i++){
             int finalI = i;
             this.dyingAnimation.getKeyFrames().add(new KeyFrame(Duration.millis(i * 100 + 100), (ActionEvent event) -> {
-                gc.clearRect(this.positionX,this.positionY,this.width,this.height);
-                gc.drawImage(imageWood, this.positionX, this.positionY, this.width, this.height);
+                //gc.clearRect(this.positionX,this.positionY,this.width,this.height);
+                //gc.drawImage(, this.positionX, this.positionY, this.width, this.height);
                 gc.drawImage(imageBlood, this.width * finalI, yPositionOfDyingImageInEntitySheet, this.width, this.height, this.positionX, this.positionY, this.width, this.height);
             }));
         }
@@ -279,7 +289,14 @@ public abstract class Entity {
     public abstract void dead();
 
     /**
-     * Reset speed of Entity with the default one
+     * @return the new direction
+     */
+    public Direction getNewDirection() {
+        return newDirection;
+    }
+
+    /**
+     * Reset speed of character.Entity with the default one
      */
     public void reset(){
         this.actualSpeed = this.defaultSpeed;
@@ -287,7 +304,7 @@ public abstract class Entity {
 
     @Override
     public String toString() {
-        return "Entity{" +
+        return "character.Entity{" +
                 "SPRITEWIDTH=" + SPRITEWIDTH +
                 ", image=" + image +
                 ", initialXEntityAlive=" + initialXEntityAlive +

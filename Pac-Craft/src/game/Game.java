@@ -1,13 +1,18 @@
+package game;
+
+import character.Direction;
+import character.Player;
+import character.Zombie;
+import config.Collision;
+import config.Tilemap;
 import javafx.animation.AnimationTimer;
 import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.media.MediaPlayer;
@@ -16,19 +21,19 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import menu.UI;
+
 import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class Game {
-    final Main main;
+    final Controller controller;
     private final int PAUSEVALUE = 10;
 
     private static MediaPlayer musicPlayer;
     private boolean paused;
     private AnimationTimer animationTimer;
-    private Tilemap tilemap;
-    private UI ui;
+    private final Tilemap tilemap;
+    private final UI ui;
 
     // Creating zombies
     private final Player player;
@@ -40,20 +45,20 @@ public class Game {
 
     /**
      * Creates new game with given main
-     * @param main the main to use
+     * @param controller the main to use
      */
-    public Game(Main main) {
+    public Game(Controller controller) {
         // Interface init
-        this.main = main;
+        this.controller = controller;
         this.paused = false;
         this.tilemap = new Tilemap(0);
         this.ui = new UI(tilemap);
         initMusicPlayer();
 
-        // Player init
+        // character.Player init
         this.player = new Player(ui);
 
-        // Zombie init
+        // character.Zombie init
         zombie1 = new Zombie();
         zombie2 = new Zombie();
         zombie3 = new Zombie();
@@ -67,25 +72,25 @@ public class Game {
 
     /**
      * Create a new game on the nth map with givenmain,coin number and hp
-     * @param main the main to use
+     * @param controller the main to use
      * @param nMap the id of the map
      * @param coinNumber the number of coin
      * @param hp the left hp
      */
-    public Game(Main main, int nMap, int coinNumber, int hp) {
+    public Game(Controller controller, int nMap, int coinNumber, int hp) {
         // Interface init
-        this.main = main;
+        this.controller = controller;
         this.paused = false;
         this.tilemap = new Tilemap(nMap);
         this.ui = new UI(tilemap, hp, coinNumber);
         initMusicPlayer();
 
-        // Player init
+        // character.Player init
         this.player = new Player(ui);
         this.player.setNbPiece(coinNumber);
         this.player.setHp(hp);
 
-        // Zombie init
+        // character.Zombie init
         zombie1 = new Zombie();
         zombie2 = new Zombie();
         zombie3 = new Zombie();
@@ -117,8 +122,9 @@ public class Game {
 
         // Creating main stackpane
         StackPane stackPane = new StackPane();
-        ObservableList stackPaneChildren = stackPane.getChildren();
-        stackPaneChildren.add(main.root);
+        ObservableList<javafx.scene.Node> stackPaneChildren;
+        stackPaneChildren = stackPane.getChildren();
+        stackPaneChildren.add(controller.root);
         stackPaneChildren.add(ui);
 
         // Scene creation
@@ -130,9 +136,9 @@ public class Game {
         Canvas canvas = new Canvas(tilemap.getNbBlockWidth() * tilemap.getBlockSide(), tilemap.getNbBlockHeight() * tilemap.getBlockSide());
         GraphicsContext gc = canvas.getGraphicsContext2D();
         holder.getChildren().add(canvas);
-        main.root.getChildren().add(holder);
+        controller.root.getChildren().add(holder);
 
-        // Game loop
+        // game.Game loop
         final long startNanoTime = System.nanoTime();
         this.animationTimer = new AnimationTimer() {
             @Override
@@ -140,21 +146,13 @@ public class Game {
                 double t = (currentNanoTime - startNanoTime) / 1000000000.0;
 
                 if (!paused) {
-                    tilemap.display(tilemap.map, gc);
+                    tilemap.display(tilemap.getMap(), gc);
                     player.nextFrame(tilemap, gc, t, player);
 
                     for (Zombie zombie : zombieArrayList) {
                         zombie.nextFrame(tilemap, gc, t, player);
-                        if (Collision.collidingWithZombie(gc, player, zombie)) {
-                            stop();
-                            Timer timer = new Timer();
-                            timer.schedule(new TimerTask() {
-                                @Override
-                                public void run() {
-                                    start();
-                                }
-                            }, 1300);
-                        }
+
+                        Collision.collidingWithZombie(player, zombie);
                     }
 
                     if (tilemap.getNumberOfCoin()==0){
@@ -177,26 +175,23 @@ public class Game {
         animationTimer.start();
 
         // Input handling
-        scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent event) {
-                switch (event.getCode()) {
-                    case UP:
-                        player.setNewDirection(Direction.UP);
-                        break;
-                    case DOWN:
-                        player.setNewDirection(Direction.DOWN);
-                        break;
-                    case LEFT:
-                        player.setNewDirection(Direction.LEFT);
-                        break;
-                    case RIGHT:
-                        player.setNewDirection(Direction.RIGHT);
-                        break;
-                    case ESCAPE:
-                        PauseMenu(stage, stackPaneChildren, tilemap);
-                        break;
-                }
+        scene.setOnKeyPressed(event -> {
+            switch (event.getCode()) {
+                case UP:
+                    player.setNewDirection(Direction.UP);
+                    break;
+                case DOWN:
+                    player.setNewDirection(Direction.DOWN);
+                    break;
+                case LEFT:
+                    player.setNewDirection(Direction.LEFT);
+                    break;
+                case RIGHT:
+                    player.setNewDirection(Direction.RIGHT);
+                    break;
+                case ESCAPE:
+                    PauseMenu(stage, stackPaneChildren, tilemap);
+                    break;
             }
         });
 
@@ -209,14 +204,14 @@ public class Game {
      * @param stackChildren the ObesrvableList of the stackPane
      * @param tilemap the tilemap
      */
-    private void PauseMenu(Stage stage, ObservableList stackChildren, Tilemap tilemap) {
+    private void PauseMenu(Stage stage, ObservableList<javafx.scene.Node> stackChildren, Tilemap tilemap) {
         if (paused) return;
         paused=true;
 
         player.stopSounds();
 
         Text pauseTitle = new Text("Pause");
-        Font minecraftFont = Font.loadFont(Main.class.getClassLoader().getResourceAsStream("fonts/Minecraft.ttf"), 20);
+        Font minecraftFont = Font.loadFont(Controller.class.getClassLoader().getResourceAsStream("fonts/Minecraft.ttf"), 20);
         pauseTitle.setFont(minecraftFont);
         pauseTitle.setFill(Color.WHITE);
         pauseTitle.setStyle("-fx-font-size: 30px;");
@@ -243,7 +238,7 @@ public class Game {
             paused = false;
             animationTimer.stop();
             musicPlayer.stop();
-            main.setLauncher(stage);
+            controller.setLauncher(stage);
         });
 
         play.getStyleClass().add("button");
@@ -264,15 +259,15 @@ public class Game {
      * @param stackChildren the ObservableList of the stackPane
      * @param tilemap the tilemap
      */
-    private void gameOver(Stage stage, ObservableList stackChildren, Tilemap tilemap){
+    private void gameOver(Stage stage, ObservableList<javafx.scene.Node> stackChildren, Tilemap tilemap){
         if (paused || player.getHp()>0) return;
         paused = true;
 
         Sound.getPlayer("death").play();
         player.stopSounds();
 
-        Text pauseTitle = new Text("Game Over");
-        Font minecraftFont = Font.loadFont(Main.class.getClassLoader().getResourceAsStream("fonts/Minecraft.ttf"), 20);
+        Text pauseTitle = new Text("game.Game Over");
+        Font minecraftFont = Font.loadFont(Controller.class.getClassLoader().getResourceAsStream("fonts/Minecraft.ttf"), 20);
         pauseTitle.setFont(minecraftFont);
         pauseTitle.setFill(Color.WHITE);
         pauseTitle.setStyle("-fx-font-size: 30px;");
@@ -293,7 +288,7 @@ public class Game {
             paused = false;
             animationTimer.stop();
             musicPlayer.stop();
-            main.newGame(stage);
+            controller.newGame(stage);
         });
 
         Button menu = new Button("Menu principal");
@@ -301,7 +296,7 @@ public class Game {
             paused = false;
             animationTimer.stop();
             musicPlayer.stop();
-            main.setLauncher(stage);
+            controller.setLauncher(stage);
         });
 
         play.getStyleClass().add("button");
@@ -322,14 +317,14 @@ public class Game {
      * @param stackChildren the ObservableList of the StackPane
      * @param tilemap the tilemap
      */
-    private void winMenu(Stage stage, ObservableList stackChildren, Tilemap tilemap){
+    private void winMenu(Stage stage, ObservableList<javafx.scene.Node> stackChildren, Tilemap tilemap){
         if (paused) return;
         paused = true;
 
         player.stopSounds();
 
         Text pauseTitle = new Text("Victoire");
-        Font minecraftFont = Font.loadFont(Main.class.getClassLoader().getResourceAsStream("fonts/Minecraft.ttf"), 20);
+        Font minecraftFont = Font.loadFont(Controller.class.getClassLoader().getResourceAsStream("fonts/Minecraft.ttf"), 20);
         pauseTitle.setFont(minecraftFont);
         pauseTitle.setFill(Color.WHITE);
         pauseTitle.setStyle("-fx-font-size: 30px;");
@@ -350,7 +345,7 @@ public class Game {
             paused = false;
             animationTimer.stop();
             musicPlayer.stop();
-            main.newGame(stage, player.getNbPiece(), player.getHp());
+            controller.newGame(stage, player.getNbPiece(), player.getHp());
         });
 
         Button menu = new Button("Menu principal");
@@ -358,7 +353,7 @@ public class Game {
             paused = false;
             animationTimer.stop();
             musicPlayer.stop();
-            main.setLauncher(stage);
+            controller.setLauncher(stage);
         });
 
         play.getStyleClass().add("button");
@@ -375,8 +370,8 @@ public class Game {
 
     @Override
     public String toString() {
-        return "Game{" +
-                "main=" + main +
+        return "game.Game{" +
+                "main=" + controller +
                 ", PAUSEVALUE=" + PAUSEVALUE +
                 ", paused=" + paused +
                 ", animationTimer=" + animationTimer +

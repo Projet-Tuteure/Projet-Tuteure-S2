@@ -1,3 +1,7 @@
+package character;
+
+import config.Collision;
+import config.Tilemap;
 import javafx.scene.canvas.GraphicsContext;
 import java.util.*;
 
@@ -6,7 +10,7 @@ public class Zombie extends Entity {
     private final int SPAWNY = 200;
 
     /**
-     * Generates a new Zombie
+     * Generates a new character.Zombie
      */
     public Zombie(){
         super("img/zombie.png",0, 0, 12,400,200, 1, 40,40, false);
@@ -20,37 +24,40 @@ public class Zombie extends Entity {
      * @param player the player
      */
     public void nextFrame(Tilemap tilemap, GraphicsContext gc, double time, Player player){
-        // Check if is at center of tile
-        if (tilemap.isCenter(this.getCenterPosX(), this.getCenterPosY())){
-            ArrayList<Direction> listDirections = new ArrayList<Direction>();
-            Random random = new Random();
-            // Check if zombie sees player, if not random direction
-            if ( !Collision.isOnSameLine(tilemap,player, this)){
-                listDirections = this.zombiePossibleDirections(tilemap, player);
-                this.newDirection = listDirections.get(random.nextInt(listDirections.size()));
-            }else {
-                if (player.isSuperMode()) {
-                    listDirections = this.getAway(tilemap, player);
-                    this.newDirection = listDirections.get(0);
+        if(isAlive()) {
+            // Check if is at center of tile
+            if (tilemap.isCenter(this.getCenterPosX(), this.getCenterPosY())) {
+                ArrayList<Direction> listDirections = new ArrayList<>();
+                Random random = new Random();
+                // Check if zombie sees player, if not random direction
+                if (!Collision.isOnSameLine(tilemap, player, this)) {
+                    listDirections = this.zombiePossibleDirections(tilemap, player);
+                    this.newDirection = listDirections.get(random.nextInt(listDirections.size()));
                 } else {
-                    this.newDirection = this.smartPath(player);
+                    if (player.isSuperMode()) {
+                        listDirections = this.getAway(tilemap, player);
+                        this.newDirection = listDirections.get(0);
+                    } else {
+                        this.newDirection = this.smartPath(player);
+                    }
+                }
+                // Check if there is no collision problems with the new direction, if yes, random other direction
+                if (Collision.notCollidingWithWalls(this, tilemap)) {
+                    this.currentDirection = this.newDirection;
+                } else {
+                    this.currentDirection = listDirections.get(random.nextInt(listDirections.size()-1));
                 }
             }
-            // Check if there is no collision problems with the new direction, if yes, random other direction
-            if (Collision.notCollidingWithWalls(this, tilemap)){
-                this.currentDirection = this.newDirection;
-            }else {
-                this.currentDirection = listDirections.get(random.nextInt(listDirections.size()));
-            }
+        }else{
+            this.currentDirection = Direction.STATIC;
         }
-
         this.updatePositionCanvas(time);
         this.render(gc);
     }
 
     /**
      * Makes zombie killable and slows him
-     * @param player the Player who the Zombie is afraid of
+     * @param player the character.Player who the character.Zombie is afraid of
      */
     public void fearOf(Player player){
         super.setActualSpeed(super.getDefaultSpeed()/2);
@@ -65,15 +72,6 @@ public class Zombie extends Entity {
     }
 
     /**
-     * Runs player dying animation
-     * @param gc canvas to draw in
-     */
-    public void animationKilled(GraphicsContext gc){
-        super.setDyingAnimation(gc,0, 0, 6, 1);
-        super.getDyingAnimation().play();
-    }
-
-    /**
      * Respawn zombie and tp it to spawn
      */
     public void respawn(){
@@ -85,6 +83,7 @@ public class Zombie extends Entity {
      */
     public void dead(){
         super.setActualSpeed(getDefaultSpeed());
+        setAlive(false);
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
@@ -207,7 +206,7 @@ public class Zombie extends Entity {
 
     @Override
     public String toString() {
-        return "Zombie{" +
+        return "character.Zombie{" +
                 "SPRITEWIDTH=" + SPRITEWIDTH +
                 ", newDirection=" + newDirection +
                 ", currentDirection=" + currentDirection +
