@@ -2,6 +2,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Tilemap {
     final int BLOCKSIDE = 40;
@@ -26,7 +27,7 @@ public class Tilemap {
             },
             {
                     {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-                    {1,2,2,2,1,2,1,2,2,2,1,2,2,2,1,2,1,2,2,2,1},
+                    {1,2,2,2,1,3,1,2,2,2,1,2,2,2,1,3,1,2,2,2,1},
                     {1,2,1,2,2,2,1,2,1,2,2,2,1,2,1,2,2,2,1,2,1},
                     {1,2,1,1,1,2,1,2,1,1,1,1,1,2,1,2,1,1,1,2,1},
                     {1,2,2,2,1,2,2,2,2,2,2,2,2,2,2,2,1,2,2,2,1},
@@ -35,7 +36,7 @@ public class Tilemap {
                     {1,2,1,2,2,2,1,2,1,1,1,1,1,2,1,2,2,2,1,2,1},
                     {1,2,2,2,1,2,1,2,2,2,0,2,2,2,1,2,1,2,2,2,1},
                     {1,1,1,2,1,2,2,2,1,1,1,1,1,2,2,2,1,2,1,1,1},
-                    {1,2,1,2,1,2,1,2,1,2,2,2,1,2,1,2,1,2,1,2,1},
+                    {1,3,1,2,1,2,1,2,1,2,2,2,1,2,1,2,1,2,1,3,1},
                     {1,2,2,2,2,2,1,2,2,2,1,2,2,2,1,2,2,2,2,2,1},
                     {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
             },
@@ -43,12 +44,12 @@ public class Tilemap {
                     {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
                     {1,2,2,2,1,2,2,2,1,2,2,2,1,2,2,2,1,2,2,2,1},
                     {1,2,1,2,1,2,1,2,2,2,1,2,2,2,1,2,1,2,1,2,1},
-                    {1,2,1,2,2,2,1,1,1,2,1,2,1,1,1,2,2,2,1,2,1},
+                    {1,2,1,2,3,2,1,1,1,2,1,2,1,1,1,2,3,2,1,2,1},
                     {1,2,1,1,1,2,1,2,2,2,2,2,2,2,1,2,1,1,1,2,1},
                     {1,2,2,2,1,2,2,2,1,1,4,1,1,2,2,2,1,2,2,2,1},
                     {1,2,1,2,2,2,1,2,1,0,0,0,1,2,1,2,2,2,1,2,1},
                     {1,2,1,2,1,1,1,2,1,1,1,1,1,2,1,1,1,2,1,2,1},
-                    {1,2,2,2,1,2,2,2,2,2,0,2,2,2,2,2,1,2,2,2,1},
+                    {1,2,3,2,1,2,2,2,2,2,0,2,2,2,2,2,1,2,3,2,1},
                     {1,2,1,2,2,2,1,2,1,1,1,1,1,2,1,2,2,2,1,2,1},
                     {1,2,1,2,1,1,1,2,2,2,1,2,2,2,1,1,1,2,1,2,1},
                     {1,2,2,2,2,2,2,2,1,2,2,2,1,2,2,2,2,2,2,2,1},
@@ -78,7 +79,7 @@ public class Tilemap {
         this.canvas = new Canvas(BLOCKSIDE * nbBlockWidth, BLOCKSIDE * nbBlockHeight);
         this.graphicsContext = canvas.getGraphicsContext2D();
         this.currentLevel = nMap;
-        loadImages(this.pattern);
+        loadImages();
 
         //players can walk on these
         floorBlocks.add(0);
@@ -94,11 +95,10 @@ public class Tilemap {
 
     /**
      * Load all images
-     * @param tabImage tap of images
      */
-    public void loadImages(Image[] tabImage){
+    public void loadImages(){
         for (int i = 0; i < this.pattern.length; i++)
-            this.pattern[i] = new Image(this.pathToTexture+String.valueOf(i)+".png");
+            this.pattern[i] = new Image(this.pathToTexture + "texture-" + String.valueOf(i) + ".png");
     }
 
     /**
@@ -114,28 +114,47 @@ public class Tilemap {
         }
     }
 
+    /**
+     * @return the block width/height
+     */
     public int getBlockSide(){
         return this.BLOCKSIDE;
     }
 
+    /**
+     * @return the number of blocks in y axis
+     */
     public int getNbBlockHeight(){
         return this.nbBlockHeight;
     }
 
+    /**
+     * @return the number of blocks in x axis
+     */
     public int getNbBlockWidth(){
         return this.nbBlockWidth;
     }
 
-    public Canvas getCanvas(){
-        return canvas;
-    }
-
+    /**
+     * Gets the type of tilemap block at given coordinates
+     * @param x the x coordinate of current level
+     * @param y the y coordinate of current level
+     * @return the type of block
+     */
     public int getValueOf(int x ,int y){ return levelList[this.currentLevel][x][y];}
 
+    /**
+     * @param x x position
+     * @return tilemap x corresponding to given x
+     */
     public int getTileX(int x){
         return x/BLOCKSIDE;
     }
 
+    /**
+     * @param y y position
+     * @return tilemap y corresponding to given y
+     */
     public int getTileY(int y){
         return y/BLOCKSIDE;
     }
@@ -149,16 +168,7 @@ public class Tilemap {
     }
 
     /**
-     * Return tab of map
-     * @param level of map
-     * @return map of desired level
-     */
-    public int[][] getMap(int level) {
-        return this.levelList[level];
-    }
-
-    /**
-     * 
+     * Compute the postion and get if it is centered
      * @param x position X
      * @param y position Y
      * @return boolean if is in the center of block
@@ -172,7 +182,7 @@ public class Tilemap {
 
     /**
      * Number of coins in the tilemap
-     * @return number of coins in the til
+     * @return number of coins in the tile map
      */
     public int getNumberOfCoin(){
         int counter = 0;
@@ -184,5 +194,24 @@ public class Tilemap {
             }
         }
         return counter;
+    }
+
+    @Override
+    public String toString() {
+        return "Tilemap{" +
+                "BLOCKSIDE=" + BLOCKSIDE +
+                ", pathToTexture='" + pathToTexture + '\'' +
+                ", nbTexture=" + nbTexture +
+                ", levelList=" + Arrays.toString(levelList) +
+                ", nbBlockWidth=" + nbBlockWidth +
+                ", nbBlockHeight=" + nbBlockHeight +
+                ", currentLevel=" + currentLevel +
+                ", canvas=" + canvas +
+                ", graphicsContext=" + graphicsContext +
+                ", pattern=" + Arrays.toString(pattern) +
+                ", map=" + Arrays.toString(map) +
+                ", floorBlocks=" + floorBlocks +
+                ", floorBlocksZombie=" + floorBlocksZombie +
+                '}';
     }
 }

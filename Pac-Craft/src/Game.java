@@ -22,7 +22,7 @@ import java.util.TimerTask;
 
 public class Game {
     final Main main;
-    final int PAUSEVALUE = 10;
+    private final int PAUSEVALUE = 10;
 
     private static MediaPlayer musicPlayer;
     private boolean paused;
@@ -31,12 +31,12 @@ public class Game {
     private UI ui;
 
     // Creating zombies
-    private Player player;
-    private Zombie zombie1;
-    private Zombie zombie2;
-    private Zombie zombie3;
-    private Zombie zombie4;
-    ArrayList<Zombie> zombieArrayList;
+    private final Player player;
+    private final Zombie zombie1;
+    private final Zombie zombie2;
+    private final Zombie zombie3;
+    private final Zombie zombie4;
+    private final ArrayList<Zombie> zombieArrayList;
 
     /**
      * Creates new game with given main
@@ -85,7 +85,7 @@ public class Game {
         this.player.setNbPiece(coinNumber);
         this.player.setHp(hp);
 
-
+        // Zombie init
         zombie1 = new Zombie();
         zombie2 = new Zombie();
         zombie3 = new Zombie();
@@ -182,16 +182,16 @@ public class Game {
             public void handle(KeyEvent event) {
                 switch (event.getCode()) {
                     case UP:
-                        player.setNewDirection(Sprite.Direction.UP);
+                        player.setNewDirection(Direction.UP);
                         break;
                     case DOWN:
-                        player.setNewDirection(Sprite.Direction.DOWN);
+                        player.setNewDirection(Direction.DOWN);
                         break;
                     case LEFT:
-                        player.setNewDirection(Sprite.Direction.LEFT);
+                        player.setNewDirection(Direction.LEFT);
                         break;
                     case RIGHT:
-                        player.setNewDirection(Sprite.Direction.RIGHT);
+                        player.setNewDirection(Direction.RIGHT);
                         break;
                     case ESCAPE:
                         PauseMenu(stage, stackPaneChildren, tilemap);
@@ -234,7 +234,7 @@ public class Game {
 
         Button play = new Button("Reprendre");
         play.setOnAction(event -> {
-            paused=false;
+            paused = false;
             stackChildren.remove(pauseBox);
         });
 
@@ -266,7 +266,7 @@ public class Game {
      */
     private void gameOver(Stage stage, ObservableList stackChildren, Tilemap tilemap){
         if (paused || player.getHp()>0) return;
-        paused=true;
+        paused = true;
 
         Sound.getPlayer("death").play();
         player.stopSounds();
@@ -290,7 +290,7 @@ public class Game {
 
         Button play = new Button("Rejouer");
         play.setOnAction(event -> {
-            paused=false;
+            paused = false;
             animationTimer.stop();
             musicPlayer.stop();
             main.newGame(stage);
@@ -298,7 +298,7 @@ public class Game {
 
         Button menu = new Button("Menu principal");
         menu.setOnAction(event -> {
-            paused=false;
+            paused = false;
             animationTimer.stop();
             musicPlayer.stop();
             main.setLauncher(stage);
@@ -324,7 +324,7 @@ public class Game {
      */
     private void winMenu(Stage stage, ObservableList stackChildren, Tilemap tilemap){
         if (paused) return;
-        paused=true;
+        paused = true;
 
         player.stopSounds();
 
@@ -347,7 +347,7 @@ public class Game {
 
         Button play = new Button("Niveau suivant");
         play.setOnAction(event -> {
-            paused=false;
+            paused = false;
             animationTimer.stop();
             musicPlayer.stop();
             main.newGame(stage, player.getNbPiece(), player.getHp());
@@ -355,7 +355,7 @@ public class Game {
 
         Button menu = new Button("Menu principal");
         menu.setOnAction(event -> {
-            paused=false;
+            paused = false;
             animationTimer.stop();
             musicPlayer.stop();
             main.setLauncher(stage);
@@ -371,5 +371,23 @@ public class Game {
         pauseBox.getStylesheets().add("styles/style.css");
 
         stackChildren.add(pauseBox);
+    }
+
+    @Override
+    public String toString() {
+        return "Game{" +
+                "main=" + main +
+                ", PAUSEVALUE=" + PAUSEVALUE +
+                ", paused=" + paused +
+                ", animationTimer=" + animationTimer +
+                ", tilemap=" + tilemap +
+                ", ui=" + ui +
+                ", player=" + player +
+                ", zombie1=" + zombie1 +
+                ", zombie2=" + zombie2 +
+                ", zombie3=" + zombie3 +
+                ", zombie4=" + zombie4 +
+                ", zombieArrayList=" + zombieArrayList +
+                '}';
     }
 }

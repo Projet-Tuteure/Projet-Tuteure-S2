@@ -6,20 +6,13 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.util.Duration;
 
-public abstract class Sprite{
-    enum Direction {
-        UP,
-        RIGHT,
-        DOWN,
-        LEFT,
-        STATIC
-    }
+public abstract class Entity {
 
     final int SPRITEWIDTH = 40;
 
     private Image image;
-    private int initialXSpriteAlive;
-    private int initialYSpriteAlive;
+    private int initialXEntityAlive;
+    private int initialYEntityAlive;
     private int nbImage;
     private double positionX;
     private double positionY;
@@ -27,29 +20,31 @@ public abstract class Sprite{
     private double actualSpeed;
     private boolean isAlive;
     private boolean killable;
-    Direction newDirection;
-    Direction currentDirection;
     private double width;
     private double height;
     private double index;
     private Timeline dyingAnimation;
+    Direction newDirection;
+    Direction currentDirection;
 
     /**
-     * generate a new Sprite
-     * @param initialXSpriteAlive
-     * @param initialYSpriteAlive
+     * Generates a new Entities
+     * @param path path to image
+     * @param initialXEntityAlive
+     * @param initialYEntityAlive
      * @param nbImage number of image for character
      * @param posX position X
      * @param posY position Y
      * @param defaultSpeed default speed for character
      * @param width width of picture
      * @param height height of picture
+     * @param killable is killable
      */
-    public Sprite(String path, int initialXSpriteAlive, int initialYSpriteAlive, int nbImage, int posX, int posY, double defaultSpeed, int width, int height, boolean killable){
+    public Entity(String path, int initialXEntityAlive, int initialYEntityAlive, int nbImage, int posX, int posY, double defaultSpeed, int width, int height, boolean killable){
         this.image = new Image(path);
         this.nbImage = nbImage;
-        this.initialXSpriteAlive = initialXSpriteAlive;
-        this.initialYSpriteAlive = initialYSpriteAlive;
+        this.initialXEntityAlive = initialXEntityAlive;
+        this.initialYEntityAlive = initialYEntityAlive;
         this.positionX = posX;
         this.positionY = posY;
         this.defaultSpeed = defaultSpeed;
@@ -64,77 +59,83 @@ public abstract class Sprite{
     }
 
     /**
-     * @param initialYSpriteAlive int
+     * Sets the origin Y coordinate of the Entity when entity's alive
+     * @param initialYEntityAlive
      */
-    public void setInitialYSpriteAlive(int initialYSpriteAlive) {
-        this.initialYSpriteAlive = initialYSpriteAlive;
+    public void setInitialYEntityAlive(int initialYEntityAlive) {
+        this.initialYEntityAlive = initialYEntityAlive;
     }
 
     /**
-     * @return double X position of Sprite
+     * @return X position of Entity
      */
     public double getPositionX() {
         return this.positionX;
     }
 
     /**
-     * @param positionX double
+     * Sets the X position
+     * @param positionX X position
      */
     public void setPositionX(double positionX) {
         this.positionX = positionX;
     }
 
     /**
-     * @return double Y position of Sprite
+     * @return Y position of Entity
      */
     public double getPositionY() {
         return this.positionY;
     }
 
     /**
-     * @param positionY double
+     * Sets the Y position of Entity
+     * @param positionY Y position
      */
     public void setPositionY(double positionY) {
         this.positionY = positionY;
     }
 
     /**
-     * @return double default speed of Sprite
+     * @return double default speed of Entity
      */
     public double getDefaultSpeed() {
         return this.defaultSpeed;
     }
 
     /**
-     * @param actualSpeed double
+     * Sets the Entities speed to given actualSpeed
+     * @param actualSpeed the speed at which the Entity goes
      */
     public void setActualSpeed(double actualSpeed) {
         this.actualSpeed = actualSpeed;
     }
 
     /**
-     * @param alive boolean to set Sprite alive or not
+     * Sets alive state to given state
+     * @param alive is alive
      */
     public void setAlive(boolean alive) {
         this.isAlive = alive;
     }
 
     /**
-     * @return Boolean True if can be killed, False if not
+     * @return entity is killable
      */
     public boolean isKillable() {
         return this.killable;
     }
 
     /**
-     * @param killable Boolean
+     * Sets killable state to given state
+     * @param killable is killable
      */
     public void setKillable(boolean killable) {
         this.killable = killable;
     }
 
     /**
-     * @return double width of Sprite
+     * @return width of the Entity
      */
     public double getWidth() {
         return this.width;
@@ -144,12 +145,12 @@ public abstract class Sprite{
      * Return the current direction of character
      * @return current direction
      */
-    public Sprite.Direction getCurrentDirection(){
+    public Direction getCurrentDirection(){
         return this.currentDirection;
     }
 
     /**
-     * Return the center of the sprite to X
+     * Return the center of the Entity to X
      * @return Center of position character
      */
     public int getCenterPosX(){
@@ -157,7 +158,7 @@ public abstract class Sprite{
     }
 
     /**
-     * Return the center of the sprite to Y
+     * Return the center of the Entity to Y
      * @return Center of position character
      */
     public int getCenterPosY(){
@@ -165,7 +166,7 @@ public abstract class Sprite{
     }
 
     /**
-     * Defines the new direction of the sprite
+     * Sets the new direction of the Entity
      * @param direction new direction
      */
     public void setNewDirection(Direction direction){
@@ -173,8 +174,8 @@ public abstract class Sprite{
     }
 
     /**
-     * Used to update the Sprite's position in the canvas
-     * @param t double time passed in the AnimationTimer
+     * Update the Entity's position in the canvas
+     * @param t time elapsed in AnimationTimer
      */
     public void updatePositionCanvas(double t){
         this.index = (int) ((t % (this.nbImage * 0.1 )) / 0.1);
@@ -197,42 +198,42 @@ public abstract class Sprite{
     }
 
     /**
-     * Display the Sprite to the Canvas
-     * @param gc GraphicsContext the canvas to draw in
+     * Display the Entity to the Canvas
+     * @param gc canvas to draw in
      */
     public void render(GraphicsContext gc){
         double indexX = this.width * this.index;
         if (this.currentDirection == Direction.STATIC && isAlive)
-            gc.drawImage(this.image, indexX, (this.newDirection.ordinal()+this.initialYSpriteAlive) * this.height, this.width, this.height, this.positionX, this.positionY, this.width, this.height);
-        else if (this.currentDirection!=Direction.STATIC && isAlive)
-            gc.drawImage(this.image, indexX, (this.currentDirection.ordinal()+this.initialYSpriteAlive+4) * this.height ,this.width, this.height, this.positionX,this.positionY, this.width,this.height);
+            gc.drawImage(this.image, indexX, (this.newDirection.ordinal()+this.initialYEntityAlive) * this.height, this.width, this.height, this.positionX, this.positionY, this.width, this.height);
+        else if (this.currentDirection != Direction.STATIC && isAlive)
+            gc.drawImage(this.image, indexX, (this.currentDirection.ordinal()+this.initialYEntityAlive+4) * this.height ,this.width, this.height, this.positionX,this.positionY, this.width,this.height);
     }
 
     /**
-     * Calls the different functions managing the display of the sprite at the next frame
-     * @param gc GraphicContext for draw
-     * @param time Time elapsed between the 2 frames
+     * Manages transition between frames
+     * @param gc for draw
+     * @param time time elapsed between the 2 frames
      */
     public abstract void nextFrame(Tilemap tilemap, GraphicsContext gc, double time, Player player);
 
     /**
-     * Useful for the collision detection
-     * @return Rectangle2D a hit box of the Sprite
+     * Gets gitbox boundaries
+     * @return Rectangle2D a hit box of the Entity
      */
     public Rectangle2D getBoundary(){
         return new Rectangle2D(this.positionX,this.positionY,this.width,this.height);
     }
 
     /**
-     * @param s Sprite to compare position with
-     * @return boolean True if collide, False if not
+     * @param entity entity to compare position with
+     * @return entity is colliding with given entity
      */
-    public boolean isColliding(Sprite s){
-        return s.getBoundary().intersects(this.getBoundary()) && this.isAlive;
+    public boolean isColliding(Entity entity){
+        return entity.getBoundary().intersects(this.getBoundary()) && this.isAlive;
     }
 
     /**
-     * Respawn the Sprite to (X,Y) position with update characteristics
+     * Respawn the Entity to (X,Y) position with updated characteristics
      * @param posX int X position to respawn
      * @param posY int Y position to respawn
      */
@@ -240,33 +241,25 @@ public abstract class Sprite{
         this.positionX = posX;
         this.positionY = posY;
         this.isAlive = true;
-/*        this.killable = false;
-        Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                killable = true;
-            }
-        }, 5000);*/
     }
 
     /**
-     * @return Timeline the dying animation
+     * @return the dying animation timeline
      */
     public Timeline getDyingAnimation(){
         return this.dyingAnimation;
     }
 
     /**
-     * Animation of dead
+     * Sets dying animation of entity
      * @param gc the canvas to draw in
-     * @param yPositionOfDyingImageInSpriteSheet int the initial position of the dying image in the Sprite's sheet
+     * @param yPositionOfDyingImageInEntitySheet int the initial position of the dying image in the Entity's sheet
      * @param firstImage int the initial index of dying image
      * @param lastImage int the last index of dying image
      * @param nbRepeat int number of time to repeat the animation
      */
-    public void setDyingAnimation(GraphicsContext gc, int yPositionOfDyingImageInSpriteSheet, int firstImage, int lastImage, int nbRepeat){
-        Image imageWood = new Image("img/0.png");
+    public void setDyingAnimation(GraphicsContext gc, int yPositionOfDyingImageInEntitySheet, int firstImage, int lastImage, int nbRepeat){
+        Image imageWood = new Image("img/texture-0.png");
         Image imageBlood = new Image("img/blood.png");
         this.dyingAnimation = new Timeline();
         this.dyingAnimation.setCycleCount(nbRepeat);
@@ -275,20 +268,43 @@ public abstract class Sprite{
             this.dyingAnimation.getKeyFrames().add(new KeyFrame(Duration.millis(i * 100 + 100), (ActionEvent event) -> {
                 gc.clearRect(this.positionX,this.positionY,this.width,this.height);
                 gc.drawImage(imageWood, this.positionX, this.positionY, this.width, this.height);
-                gc.drawImage(imageBlood, this.width * finalI, yPositionOfDyingImageInSpriteSheet, this.width, this.height, this.positionX, this.positionY, this.width, this.height);
+                gc.drawImage(imageBlood, this.width * finalI, yPositionOfDyingImageInEntitySheet, this.width, this.height, this.positionX, this.positionY, this.width, this.height);
             }));
         }
     }
 
     /**
-     * Methode to set character dead
+     * Make entity die
      */
     public abstract void dead();
 
     /**
-     * Reset speed of Sprite with default
+     * Reset speed of Entity with the default one
      */
     public void reset(){
         this.actualSpeed = this.defaultSpeed;
+    }
+
+    @Override
+    public String toString() {
+        return "Entity{" +
+                "SPRITEWIDTH=" + SPRITEWIDTH +
+                ", image=" + image +
+                ", initialXEntityAlive=" + initialXEntityAlive +
+                ", initialYEntityAlive=" + initialYEntityAlive +
+                ", nbImage=" + nbImage +
+                ", positionX=" + positionX +
+                ", positionY=" + positionY +
+                ", defaultSpeed=" + defaultSpeed +
+                ", actualSpeed=" + actualSpeed +
+                ", isAlive=" + isAlive +
+                ", killable=" + killable +
+                ", newDirection=" + newDirection +
+                ", currentDirection=" + currentDirection +
+                ", width=" + width +
+                ", height=" + height +
+                ", index=" + index +
+                ", dyingAnimation=" + dyingAnimation +
+                '}';
     }
 }

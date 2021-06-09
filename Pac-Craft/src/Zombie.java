@@ -1,7 +1,7 @@
 import javafx.scene.canvas.GraphicsContext;
 import java.util.*;
 
-public class Zombie extends Sprite{
+public class Zombie extends Entity {
     private final int SPAWNX = 400;
     private final int SPAWNY = 200;
 
@@ -100,11 +100,13 @@ public class Zombie extends Sprite{
      * @return random available direction
      */
     public ArrayList<Direction> zombiePossibleDirections(Tilemap tilemap, Player player) {
+        // Get current state of zombie (pos, size, direction)
         int x = (int)getPositionX();
         int y = (int)getPositionY();
         int sizeBlock = (int)super.getWidth();
         Direction actualDirection = super.getCurrentDirection();
 
+        // Check which move is possible
         ArrayList<Direction> listDirection = new ArrayList<>();
         if(tilemap.getTileFromXY(x + sizeBlock, y) != 1)
             listDirection.add(Direction.RIGHT);
@@ -115,6 +117,7 @@ public class Zombie extends Sprite{
         if(tilemap.getTileFromXY(x, y - sizeBlock) != 1)
             listDirection.add(Direction.UP);
 
+        // Forbid turn around except if zombie is running away
         if (!player.isSuperMode()){
             switch (actualDirection){
                 case UP:
@@ -139,18 +142,21 @@ public class Zombie extends Sprite{
     }
 
     /**
-     * Calculate best direction to go nearest to player
+     * Calculate direction to go toward player if in sight
      * @param player the player to go to
      * @return the best direction
      */
     public Direction smartPath(Player player){
-        if (this.getPositionY()==player.getPositionY()){
+        // Check if same line or column with player
+        if (this.getPositionY() == player.getPositionY()){
+            // Choose to go right or left
             if ((this.getPositionX() - player.getPositionX())>0) {
                 return Direction.LEFT;
             }else {
                 return Direction.RIGHT;
             }
-        }else if (this.getPositionX()==player.getPositionX()){
+        }else if (this.getPositionX() == player.getPositionX()){
+            // Choose to go up or down
             if ((this.getPositionY() - player.getPositionY())>0){
                 return Direction.UP;
             } else {
@@ -167,14 +173,18 @@ public class Zombie extends Sprite{
      * @return possible positions to get away from player
      */
     public ArrayList<Direction> getAway(Tilemap tilemap, Player player){
+        // Get possible direction to run away
         ArrayList<Direction> possibleDirection = this.zombiePossibleDirections(tilemap, player);
-        if (this.getPositionY()==player.getPositionY()){
+        // Check if on same line or column with player
+        if (this.getPositionY() == player.getPositionY()){
+            // Choose to go right or left
             if ((this.getPositionX() - player.getPositionX())>0) {
                 possibleDirection.remove(Direction.LEFT);
             }else {
                 possibleDirection.remove(Direction.RIGHT);
             }
-        }else if (this.getPositionX()==player.getPositionX()){
+        }else if (this.getPositionX() == player.getPositionX()){
+            // Choose to go up or down
             if ((this.getPositionY() - player.getPositionY())>0){
                 possibleDirection.remove(Direction.UP);
             } else {
@@ -191,7 +201,18 @@ public class Zombie extends Sprite{
     @Override
     public void reset() {
         super.reset();
-        super.setInitialYSpriteAlive(0);
+        super.setInitialYEntityAlive(0);
         super.setKillable(false);
+    }
+
+    @Override
+    public String toString() {
+        return "Zombie{" +
+                "SPRITEWIDTH=" + SPRITEWIDTH +
+                ", newDirection=" + newDirection +
+                ", currentDirection=" + currentDirection +
+                ", SPAWNX=" + SPAWNX +
+                ", SPAWNY=" + SPAWNY +
+                '}';
     }
 }

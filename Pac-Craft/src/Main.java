@@ -30,7 +30,7 @@ public class Main extends Application {
         stage.getIcons().add(new Image("img/icon.png"));
         stage.setResizable(false);
 
-        root = new Group();
+        this.root = new Group();
         launcher = new Launcher(this);
         nMap = 0;
     }
@@ -40,21 +40,21 @@ public class Main extends Application {
      * @param stage the parent stage
      */
     public void newGame(Stage stage){
-        root = new Group();
+        this.root = new Group();
         game = new Game(this);
         stage.setScene(game.gameScene(stage));
     }
 
     /**
-     * Creates a new gamein given stage with given coin number and hp
-     * @param stage
-     * @param coinNumber
-     * @param hp
+     * Creates a new game in given stage with given coin number and hp
+     * @param stage the parent stage
+     * @param coinNumber the coin number
+     * @param hp left hp
      */
     public void newGame(Stage stage, int coinNumber, int hp){
-        this.nMap+=1;
-        root = new Group();
-        game = new Game(this, this.nMap, coinNumber, hp);
+        this.nMap += 1;
+        this.root = new Group();
+        this.game = new Game(this, this.nMap, coinNumber, hp);
         stage.setScene(game.gameScene(stage));
     }
 
@@ -64,5 +64,15 @@ public class Main extends Application {
      */
     public void setLauncher(Stage stage) {
         stage.setScene(launcher.getScene(stage));
+    }
+
+    @Override
+    public String toString() {
+        return "Main{" +
+                "root=" + root +
+                ", launcher=" + launcher +
+                ", game=" + game +
+                ", nMap=" + nMap +
+                '}';
     }
 }

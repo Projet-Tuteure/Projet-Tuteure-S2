@@ -30,11 +30,11 @@ public class UI extends Pane{
      * @param score
      */
     public UI(Tilemap tilemap, int hp, int score){
-        this.blockSize= tilemap.getBlockSide();
+        this.blockSize = tilemap.getBlockSide();
         this.halfBlockSize = blockSize/2;
         this.tilemap = tilemap;
         this.hp = hp;
-        this.coin =score;
+        this.coin = score;
 
         initWidgets();
     }
@@ -92,7 +92,7 @@ public class UI extends Pane{
      * @param i number of pv to add
      */
     public void addHp(int i){
-        hp+=i;
+        hp += i;
         updatePv(hpPane);
     }
 
@@ -134,7 +134,7 @@ public class UI extends Pane{
      * @param n the number of coin to add
      */
     public void addToCoin(int n){
-        coin +=n;
+        coin += n;
         updateCoin();
     }
 
@@ -143,5 +143,18 @@ public class UI extends Pane{
      */
     private void updateCoin() {
         coinLbl.setText(Integer.toString(coin));
+    }
+
+    @Override
+    public String toString() {
+        return "UI{" +
+                "hp=" + hp +
+                ", coin=" + coin +
+                ", coinLbl=" + coinLbl +
+                ", hpPane=" + hpPane +
+                ", blockSize=" + blockSize +
+                ", halfBlockSize=" + halfBlockSize +
+                ", tilemap=" + tilemap +
+                '}';
     }
 }

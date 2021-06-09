@@ -13,7 +13,7 @@ public class Collision {
         int xIndex = tilemap.getTileX(player.getCenterPosX());
         int yIndex = tilemap.getTileY(player.getCenterPosY());
         if(tilemap.getTileFromXYTile(xIndex, yIndex) == 2){
-            tilemap.levelList[tilemap.currentLevel][yIndex][xIndex]=0;
+            tilemap.levelList[tilemap.currentLevel][yIndex][xIndex] = 0;
             player.addPiece();
         }
     }
@@ -43,7 +43,7 @@ public class Collision {
      * @param tilemap the tilemap
      * @return true if player isn't colliding with walls
      */
-    public static boolean notCollidingWithWalls(Sprite character, Tilemap tilemap){
+    public static boolean notCollidingWithWalls(Entity character, Tilemap tilemap){
         switch (character.newDirection){
             case UP:
                 if (tilemap.floorBlocks.contains(tilemap.getTileFromXY(character.getCenterPosX(), character.getCenterPosY()-tilemap.BLOCKSIDE))){
@@ -134,14 +134,14 @@ public class Collision {
     public static boolean isOnSameLine(Tilemap tilemap, Player player, Zombie zombie){
         if (player.getPositionX() == zombie.getPositionX()){
             for (int i = Math.min((int)player.getPositionY(),(int)zombie.getPositionY()); i< Math.max((int)player.getPositionY(),(int)zombie.getPositionY()) ; i+=40){
-                if (tilemap.getTileFromXY((int) player.getPositionX(), i)== 1){
+                if (tilemap.getTileFromXY((int) player.getPositionX(), i) == 1){
                     return false;
                 }
             }
             return true;
         } else if (player.getPositionY() == zombie.getPositionY()){
             for (int i = Math.min((int)player.getPositionX(),(int)zombie.getPositionX()); i< Math.max((int)player.getPositionX(),(int)zombie.getPositionX()); i+=40){
-                if (tilemap.getTileFromXY(i, (int) player.getPositionY())== 1){
+                if (tilemap.getTileFromXY(i, (int) player.getPositionY()) == 1){
                     return false;
                 }
             }

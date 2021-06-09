@@ -23,7 +23,7 @@ public class Launcher {
      */
     public Launcher(Main main){
         this.main = main;
-        musicPlayer= Sound.getPlayer("Sweden");
+        musicPlayer = Sound.getPlayer("Sweden");
         musicPlayer.setOnEndOfMedia(new Runnable() {
             @Override
             public void run() {
@@ -93,5 +93,13 @@ public class Launcher {
         mainMenu.getStylesheets().add("styles/style.css");
 
         return mainMenu;
+    }
+
+    @Override
+    public String toString() {
+        return "Launcher{" +
+                "mainMenu=" + mainMenu +
+                ", main=" + main +
+                '}';
     }
 }

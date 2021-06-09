@@ -5,10 +5,9 @@ import javafx.util.Duration;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class Player extends Sprite{
+public class Player extends Entity {
     private final int SPAWNX = 400;
     private final int SPAWNY = 320;
-
     private int hp;
     private int coinNumber;
     private boolean isSuperMode;
@@ -25,9 +24,10 @@ public class Player extends Sprite{
         super("img/steve.png",420, 0, 12,400,320,1,40,40, true);
         this.hp = 3;
         this.isSuperMode = false;
-        this.superPowerDuration = 10000; // 10 secondes
+        this.superPowerDuration = 10000; // 10 seconds
         this.superPowerSpeed = super.getDefaultSpeed() * 2;
         this.ui = ui;
+
         // Sound
         this.walkingPlayer = Sound.getPlayer("walking");
         walkingPlayer.setOnEndOfMedia(new Runnable() {
@@ -47,8 +47,11 @@ public class Player extends Sprite{
      * @param player the player
      */
     public void nextFrame(Tilemap tilemap,GraphicsContext gc, double time, Player player){
+        // Check if Player
         if (tilemap.isCenter(this.getCenterPosX(), this.getCenterPosY())){
+            // Check if new direction collides
             if (Collision.notCollidingWithWalls(this, tilemap)){
+                // Handle walking / running sound
                 if(player.isSuperMode()){
                     if(!runningPlayer.getStatus().equals(MediaPlayer.Status.PLAYING))
                         runningPlayer.play();
@@ -56,8 +59,10 @@ public class Player extends Sprite{
                     if(!walkingPlayer.getStatus().equals(MediaPlayer.Status.PLAYING))
                         walkingPlayer.play();
                 }
+                // update direction
                 this.currentDirection = this.newDirection;
             } else {
+                // Stop walking / running sound
                 if(player.isSuperMode()){
                     if(runningPlayer.getStatus().equals(MediaPlayer.Status.PLAYING))
                         runningPlayer.stop();
@@ -65,7 +70,8 @@ public class Player extends Sprite{
                     if(walkingPlayer.getStatus().equals(MediaPlayer.Status.PLAYING))
                         walkingPlayer.stop();
                 }
-                this.currentDirection = Sprite.Direction.STATIC;
+                // Stop the player movements
+                this.currentDirection = Direction.STATIC;
             }
         }
 
@@ -99,7 +105,7 @@ public class Player extends Sprite{
     }
 
     /**
-     * @return is player in supermode
+     * @return is player in super mode
      */
     public boolean isSuperMode() {
         return this.isSuperMode;
@@ -138,7 +144,7 @@ public class Player extends Sprite{
     }
 
     /**
-     * Switch player to powerup mode
+     * Switch player to power up mode
      */
     public void powerUp(){
         this.isSuperMode = true;
@@ -148,7 +154,7 @@ public class Player extends Sprite{
         this.setPositionX(this.getPositionX()-this.getPositionX()%2);
         this.setPositionY(this.getPositionY()-this.getPositionY()%2);
         super.setKillable(false);
-        super.setInitialYSpriteAlive(8);
+        super.setInitialYEntityAlive(8);
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
@@ -156,7 +162,7 @@ public class Player extends Sprite{
                 Player.this.isSuperMode = false;
                 Player.super.setKillable(true);
                 Player.super.setActualSpeed(Player.super.getDefaultSpeed());
-                Player.super.setInitialYSpriteAlive(0);
+                Player.super.setInitialYEntityAlive(0);
             }
         }, this.superPowerDuration);
     }
@@ -199,5 +205,24 @@ public class Player extends Sprite{
         super.reset();
         super.setKillable(true);
         this.isSuperMode = false;
+    }
+
+    @Override
+    public String toString() {
+        return "Player{" +
+                "SPRITEWIDTH=" + SPRITEWIDTH +
+                ", newDirection=" + newDirection +
+                ", currentDirection=" + currentDirection +
+                ", SPAWNX=" + SPAWNX +
+                ", SPAWNY=" + SPAWNY +
+                ", hp=" + hp +
+                ", coinNumber=" + coinNumber +
+                ", isSuperMode=" + isSuperMode +
+                ", superPowerDuration=" + superPowerDuration +
+                ", superPowerSpeed=" + superPowerSpeed +
+                ", ui=" + ui +
+                ", walkingPlayer=" + walkingPlayer +
+                ", runningPlayer=" + runningPlayer +
+                '}';
     }
 }

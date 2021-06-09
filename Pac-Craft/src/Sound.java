@@ -13,4 +13,9 @@ public class Sound {
         Media sound = new Media(new File(filePath).toURI().toString());
         return new MediaPlayer(sound);
     }
+
+    @Override
+    public String toString() {
+        return super.toString();
+    }
 }
