@@ -1,7 +1,7 @@
 package character;
 
-import config.Collision;
-import config.Tilemap;
+import map.Collision;
+import map.Tilemap;
 import javafx.scene.canvas.GraphicsContext;
 import java.util.*;
 

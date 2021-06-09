@@ -1,6 +1,6 @@
 package character;
 
-import config.Tilemap;
+import map.Tilemap;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;

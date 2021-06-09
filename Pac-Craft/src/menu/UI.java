@@ -1,6 +1,6 @@
 package menu;
 
-import config.Tilemap;
+import map.Tilemap;
 import game.Controller;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;

@@ -3,8 +3,8 @@ package game;
 import character.Direction;
 import character.Player;
 import character.Zombie;
-import config.Collision;
-import config.Tilemap;
+import map.Collision;
+import map.Tilemap;
 import javafx.animation.AnimationTimer;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -266,7 +266,7 @@ public class Game {
         Sound.getPlayer("death").play();
         player.stopSounds();
 
-        Text pauseTitle = new Text("game.Game Over");
+        Text pauseTitle = new Text("Game Over");
         Font minecraftFont = Font.loadFont(Controller.class.getClassLoader().getResourceAsStream("ressources/fonts/Minecraft.ttf"), 20);
         pauseTitle.setFont(minecraftFont);
         pauseTitle.setFill(Color.WHITE);

@@ -1,4 +1,4 @@
-package config;
+package map;
 
 import character.Entity;
 import character.Player;
