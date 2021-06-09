@@ -75,7 +75,7 @@ public class Tilemap {
      * @param nMap the number of the map
      */
     public Tilemap(int nMap) {
-        nMap%=levelList.length;
+        nMap%=levelList.length-1;
         this.map = levelList[nMap];
         this.nbBlockWidth = levelList[nMap][0].length;
         this.nbBlockHeight = levelList[nMap].length;
