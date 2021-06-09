@@ -8,7 +8,7 @@ import java.util.Arrays;
 
 public class Tilemap {
     final int BLOCKSIDE = 40;
-    final String pathToTexture = "/img/";
+    final String pathToTexture = "/ressources/img/";
     final int nbTexture = 5;
 
     int[][][] levelList = {

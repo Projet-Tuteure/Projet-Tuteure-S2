@@ -46,7 +46,7 @@ public abstract class Entity {
      */
     public Entity(String path, int initialXEntityAlive, int initialYEntityAlive, int nbImage, int posX, int posY, double defaultSpeed, int width, int height, boolean killable){
         this.image = new Image(path);
-        this.dyingImage = new Image("img/blood.png");
+        this.dyingImage = new Image("ressources/img/blood.png");
         this.nbImage = nbImage;
         this.initialXEntityAlive = initialXEntityAlive;
         this.initialYEntityAlive = initialYEntityAlive;
@@ -269,8 +269,8 @@ public abstract class Entity {
      * @param nbRepeat int number of time to repeat the animation
      */
     public void setDyingAnimation(GraphicsContext gc, int yPositionOfDyingImageInEntitySheet, int firstImage, int lastImage, int nbRepeat){
-        //Image imageWood = new Image("img/texture-0.png");
-        Image imageBlood = new Image("img/blood.png");
+        //Image imageWood = new Image("ressources.img/texture-0.png");
+        Image imageBlood = new Image("ressources/img/blood.png");
         this.dyingAnimation = new Timeline();
         this.dyingAnimation.setCycleCount(nbRepeat);
         for (int i = firstImage; i < lastImage; i++){

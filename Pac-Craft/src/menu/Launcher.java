@@ -44,7 +44,7 @@ public class Launcher {
         final int WIDTH = 840;
         final int HEIGHT = 520;
 
-        Image title = new Image("/img/title1.png");
+        Image title = new Image("/ressources/img/title1.png");
         ImageView titleView = new ImageView(title);
 
         Button play = new Button("Play");
@@ -67,7 +67,7 @@ public class Launcher {
         menuBox.setPadding(new Insets(74));
         menuBox.getStyleClass().add("main-box");
         BackgroundImage backgroundImage = new BackgroundImage(
-                new Image("img/background.jpg",WIDTH,HEIGHT,false,false),
+                new Image("ressources/img/background.jpg",WIDTH,HEIGHT,false,false),
                 BackgroundRepeat.NO_REPEAT,
                 BackgroundRepeat.NO_REPEAT,
                 BackgroundPosition.CENTER,
@@ -78,8 +78,8 @@ public class Launcher {
 
         mainMenu = new Scene(mainBox, WIDTH, HEIGHT);
 
-        Font.loadFont( Controller.class.getClassLoader().getResourceAsStream( "fonts/Minecraft.ttf"), 20);
-        mainMenu.getStylesheets().add("styles/style.css");
+        Font.loadFont( Controller.class.getClassLoader().getResourceAsStream("ressources/fonts/Minecraft.ttf"), 20);
+        mainMenu.getStylesheets().add("ressources/styles/style.css");
 
         return mainMenu;
     }

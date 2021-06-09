@@ -1,6 +1,5 @@
 package game;
 
-import game.Game;
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.image.Image;
@@ -31,7 +30,7 @@ public class Controller extends Application {
      */
     public void initWindow(Stage stage){
         stage.setTitle("Pac-Craft");
-        stage.getIcons().add(new Image("img/icon.png"));
+        stage.getIcons().add(new Image("ressources/img/icon.png"));
         stage.setResizable(false);
 
         this.root = new Group();

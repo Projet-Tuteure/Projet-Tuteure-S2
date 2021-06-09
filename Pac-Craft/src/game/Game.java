@@ -211,7 +211,7 @@ public class Game {
         player.stopSounds();
 
         Text pauseTitle = new Text("Pause");
-        Font minecraftFont = Font.loadFont(Controller.class.getClassLoader().getResourceAsStream("fonts/Minecraft.ttf"), 20);
+        Font minecraftFont = Font.loadFont(Controller.class.getClassLoader().getResourceAsStream("ressources/fonts/Minecraft.ttf"), 20);
         pauseTitle.setFont(minecraftFont);
         pauseTitle.setFill(Color.WHITE);
         pauseTitle.setStyle("-fx-font-size: 30px;");
@@ -248,7 +248,7 @@ public class Game {
         pauseBox.getChildren().add(menu);
         pauseBox.setSpacing(7);
 
-        pauseBox.getStylesheets().add("styles/style.css");
+        pauseBox.getStylesheets().add("ressources/styles/style.css");
 
         stackChildren.add(pauseBox);
     }
@@ -267,7 +267,7 @@ public class Game {
         player.stopSounds();
 
         Text pauseTitle = new Text("game.Game Over");
-        Font minecraftFont = Font.loadFont(Controller.class.getClassLoader().getResourceAsStream("fonts/Minecraft.ttf"), 20);
+        Font minecraftFont = Font.loadFont(Controller.class.getClassLoader().getResourceAsStream("ressources/fonts/Minecraft.ttf"), 20);
         pauseTitle.setFont(minecraftFont);
         pauseTitle.setFill(Color.WHITE);
         pauseTitle.setStyle("-fx-font-size: 30px;");
@@ -306,7 +306,7 @@ public class Game {
         pauseBox.getChildren().add(menu);
         pauseBox.setSpacing(7);
 
-        pauseBox.getStylesheets().add("styles/style.css");
+        pauseBox.getStylesheets().add("ressources/styles/style.css");
 
         stackChildren.add(pauseBox);
     }
@@ -324,7 +324,7 @@ public class Game {
         player.stopSounds();
 
         Text pauseTitle = new Text("Victoire");
-        Font minecraftFont = Font.loadFont(Controller.class.getClassLoader().getResourceAsStream("fonts/Minecraft.ttf"), 20);
+        Font minecraftFont = Font.loadFont(Controller.class.getClassLoader().getResourceAsStream("ressources/fonts/Minecraft.ttf"), 20);
         pauseTitle.setFont(minecraftFont);
         pauseTitle.setFill(Color.WHITE);
         pauseTitle.setStyle("-fx-font-size: 30px;");
@@ -363,7 +363,7 @@ public class Game {
         pauseBox.getChildren().add(menu);
         pauseBox.setSpacing(7);
 
-        pauseBox.getStylesheets().add("styles/style.css");
+        pauseBox.getStylesheets().add("ressources/styles/style.css");
 
         stackChildren.add(pauseBox);
     }

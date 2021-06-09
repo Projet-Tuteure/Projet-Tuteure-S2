@@ -48,11 +48,11 @@ public class UI extends Pane{
      */
     private void initWidgets(){
         int fontSize = 20;
-        Font minecraftFont = Font.loadFont( Controller.class.getClassLoader().getResourceAsStream("fonts/Minecraft.ttf"), fontSize);
+        Font minecraftFont = Font.loadFont( Controller.class.getClassLoader().getResourceAsStream("ressources/fonts/Minecraft.ttf"), fontSize);
 
         Pane scorePane = new Pane();
 
-        ImageView coinImg = new ImageView(new Image("img/coin.png"));
+        ImageView coinImg = new ImageView(new Image("ressources/img/coin.png"));
         coinImg.setLayoutX(halfBlockSize - coinImg.getImage().getWidth()/2);
         coinImg.setLayoutY(halfBlockSize - coinImg.getImage().getHeight()/2);
 
@@ -75,7 +75,7 @@ public class UI extends Pane{
      * @param hpPane the pane to update
      */
     public void updatePv(Pane hpPane){
-        Image coeurTemplate = new Image("img/heart.png");
+        Image coeurTemplate = new Image("ressources/img/heart.png");
         int yOrigin = blockSize * (tilemap.getNbBlockHeight()-1) + blockSize/2 - (int)coeurTemplate.getHeight()/2;
         int xOrigin = 0;
         hpPane.setLayoutX(xOrigin);
@@ -84,7 +84,7 @@ public class UI extends Pane{
 
         int imgToDraw = hp;
         for(int i = 0; i < imgToDraw; i++){
-            Image coeur = new Image("img/heart.png");
+            Image coeur = new Image("ressources/img/heart.png");
             ImageView coeurView = new ImageView(coeur);
             hpPane.getChildren().add(coeurView);
             coeurView.setLayoutX(((i * blockSize) + (blockSize >> 1)) - ((int) coeurTemplate.getWidth() / 2));

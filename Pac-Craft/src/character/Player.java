@@ -27,7 +27,7 @@ public class Player extends Entity {
      * Generates a new character.Player
      */
     public Player(UI ui){
-        super("img/steve.png",420, 0, 12,400,320,1,40,40, true);
+        super("ressources/img/steve.png",420, 0, 12,400,320,1,40,40, true);
         this.hp = 3;
         this.isSuperMode = false;
         this.superPowerDuration = 10000; // 10 seconds
