@@ -20,6 +20,7 @@ Si version supérieur à java10, créer une run configuration avec :
   
 ## Compiler et éxecuter à la main (en se plaçant dans le dossier src/)
 `javac --module-path /chemin/javafx/sdk/lib --add-modules javafx.controls,javafx.fxml,javafx.graphics,javafx.media Main.java game/*.java menu/*.java character/*.java map/*.java`
+
 `java --module-path /chemin/javafx/sdk/lib --add-modules javafx.controls,javafx.fxml,javafx.graphics,javafx.media Main`
 
 # Bon jeu !
