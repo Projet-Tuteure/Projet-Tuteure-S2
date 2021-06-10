@@ -100,7 +100,7 @@ public class ZombieUnitTest {
 
     @Test
     public void testgetAwayZombiePlayerSameLineWhenZombieRight() {
-        Tilemap tilemap = new Tilemap(8);
+        Tilemap tilemap = new Tilemap(0);
         Zombie zombie = new Zombie();
         Player player = Mockito.mock(Player.class);
         Mockito.when(player.getPositionX()).thenReturn(40.0);
@@ -112,7 +112,7 @@ public class ZombieUnitTest {
 
     @Test
     public void testgetAwayZombiePlayerSameLineWhenZombieLeft() {
-        Tilemap tilemap = new Tilemap(8);
+        Tilemap tilemap = new Tilemap(0);
         Zombie zombie = new Zombie();
         Player player = Mockito.mock(Player.class);
         Mockito.when(player.getPositionX()).thenReturn(120.0);
@@ -124,7 +124,7 @@ public class ZombieUnitTest {
 
     @Test
     public void testgetAwayZombiePlayerSameColumnWhenZombieUnder() {
-        Tilemap tilemap = new Tilemap(8);
+        Tilemap tilemap = new Tilemap(0);
         Zombie zombie = new Zombie();
         Player player = Mockito.mock(Player.class);
         Mockito.when(player.getPositionX()).thenReturn(40.0);
@@ -136,7 +136,7 @@ public class ZombieUnitTest {
 
     @Test
     public void testgetAwayZombiePlayerSameColumnWhenZombieAbove() {
-        Tilemap tilemap = new Tilemap(8);
+        Tilemap tilemap = new Tilemap(0);
         Zombie zombie = new Zombie();
         Player player = Mockito.mock(Player.class);
         Mockito.when(player.getPositionX()).thenReturn(40.0);
@@ -151,7 +151,7 @@ public class ZombieUnitTest {
 
     @Test
     public void testZombiePossibleDirectionUpRight() {
-        Tilemap tilemap = new Tilemap(8);
+        Tilemap tilemap = new Tilemap(0);
         Zombie zombie = new Zombie();
         Player player = Mockito.mock(Player.class);
         zombie.setPositionX(40.0);
@@ -161,7 +161,7 @@ public class ZombieUnitTest {
 
     @Test
     public void testZombiePossibleDirectionDownLeft() {
-        Tilemap tilemap = new Tilemap(8);
+        Tilemap tilemap = new Tilemap(0);
         Zombie zombie = new Zombie();
         Player player = Mockito.mock(Player.class);
         zombie.setPositionX(760.0);
@@ -171,7 +171,7 @@ public class ZombieUnitTest {
 
     @Test
     public void testZombiePossibleDirectionPlayerIsSuperMode() {
-        Tilemap tilemap = new Tilemap(8);
+        Tilemap tilemap = new Tilemap(0);
         Zombie zombie = new Zombie();
         Player player = Mockito.mock(Player.class);
         Mockito.when(player.isSuperMode()).thenReturn(false);

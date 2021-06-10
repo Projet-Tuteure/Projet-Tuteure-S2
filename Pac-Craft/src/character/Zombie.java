@@ -7,7 +7,7 @@ import java.util.*;
 
 public class Zombie extends Entity {
     private final int SPAWNX = 400;
-    private final int SPAWNY = 200;
+    private final int SPAWNY = 240;
 
     /**
      * Generates a new character.Zombie

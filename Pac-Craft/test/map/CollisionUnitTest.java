@@ -41,7 +41,7 @@ public class CollisionUnitTest {
 
     @Test
     public void testIsOnSameLineSameLineNoWallBetween(){
-        Tilemap tilemap = new Tilemap(8);
+        Tilemap tilemap = new Tilemap(0);
         Player player = Mockito.mock(Player.class);
         Zombie zombie = new Zombie();
         Mockito.when(player.getPositionX()).thenReturn(40.0);
@@ -53,7 +53,7 @@ public class CollisionUnitTest {
 
     @Test
     public void testIsOnSameLineSameLineWallBetween(){
-        Tilemap tilemap = new Tilemap(8);
+        Tilemap tilemap = new Tilemap(0);
         Player player = Mockito.mock(Player.class);
         Zombie zombie = new Zombie();
         Mockito.when(player.getPositionX()).thenReturn(40.0);
@@ -65,7 +65,7 @@ public class CollisionUnitTest {
 
     @Test
     public void testIsOnSameLineSameColumnWallBetween(){
-        Tilemap tilemap = new Tilemap(8);
+        Tilemap tilemap = new Tilemap(0);
         Player player = Mockito.mock(Player.class);
         Zombie zombie = new Zombie();
         Mockito.when(player.getPositionX()).thenReturn(40.0);
@@ -77,7 +77,7 @@ public class CollisionUnitTest {
 
     @Test
     public void testIsOnSameLineSameColumnNoWallBetween(){
-        Tilemap tilemap = new Tilemap(8);
+        Tilemap tilemap = new Tilemap(0);
         Player player = Mockito.mock(Player.class);
         Zombie zombie = new Zombie();
         Mockito.when(player.getPositionX()).thenReturn(40.0);
@@ -89,7 +89,7 @@ public class CollisionUnitTest {
 
     @Test
     public void testIsOnSameLineDifferentLineAndColumn(){
-        Tilemap tilemap = new Tilemap(8);
+        Tilemap tilemap = new Tilemap(0);
         Player player = Mockito.mock(Player.class);
         Zombie zombie = new Zombie();
         player.setPositionX(80.0);
@@ -102,7 +102,7 @@ public class CollisionUnitTest {
     @Test
     public void testNotCollidingWithWallsAllDirection(){
         Zombie zombie = new Zombie();
-        Tilemap tilemap = new Tilemap(8);
+        Tilemap tilemap = new Tilemap(0);
         zombie.setPositionX(40.0);
         zombie.setPositionY(80.0);
         zombie.setNewDirection(Direction.UP);
@@ -122,7 +122,7 @@ public class CollisionUnitTest {
     @Test
     public void testCollidingWithWallsAllDirection(){
         Zombie zombie = new Zombie();
-        Tilemap tilemap = new Tilemap(8);
+        Tilemap tilemap = new Tilemap(0);
         zombie.setPositionX(40.0);
         zombie.setPositionY(40.0);
         zombie.setNewDirection(Direction.UP);
@@ -142,7 +142,7 @@ public class CollisionUnitTest {
     @Test
     public void testNotCollidingWithWallsZombieStatique(){
         Zombie zombie = new Zombie();
-        Tilemap tilemap = new Tilemap(8);
+        Tilemap tilemap = new Tilemap(0);
         zombie.setPositionX(40.0);
         zombie.setPositionY(40.0);
         zombie.setNewDirection(Direction.STATIC);
