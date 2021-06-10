@@ -19,7 +19,7 @@ JUnit4 et Mockito sont nécessaires dans le cas où l'on voudrait éxecuter les 
 
 # Bon jeu !
 
-Pendant le jeu, utilisez les touches directionnelles pour déplacer le personnage et utilisez la touche Esc pour afficher le menu de pause du jeu.
+Pendant le jeu, utilisez les touches directionelles pour déplacer le personnage et utilisez la touche Esc pour afficher le menu de pause du jeu.
 
 
 
