@@ -11,7 +11,7 @@ public class Sound {
      * @return the media player of given sound
      */
     public static MediaPlayer getPlayer(String path) {
-        String filePath = "src/ressources/sons/"+path+".wav";
+        String filePath = "ressources/sons/"+path+".wav";
         Media sound = new Media(new File(filePath).toURI().toString());
         return new MediaPlayer(sound);
     }
