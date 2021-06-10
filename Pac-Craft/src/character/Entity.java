@@ -29,6 +29,7 @@ public abstract class Entity {
     private double index;
     private Timeline dyingAnimation;
     Direction newDirection;
+
     Direction currentDirection;
 
     /**
@@ -293,6 +294,14 @@ public abstract class Entity {
      */
     public Direction getNewDirection() {
         return newDirection;
+    }
+
+    /**
+     * Set the current direction of the entity
+     * @param currentDirection
+     */
+    public void setCurrentDirection(Direction currentDirection) {
+        this.currentDirection = currentDirection;
     }
 
     /**

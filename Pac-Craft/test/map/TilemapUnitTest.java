@@ -34,13 +34,13 @@ public class TilemapUnitTest {
 
     @Test
     public void testIsCenter(){
-        Tilemap tilemap = new Tilemap(0);
+        Tilemap tilemap = new Tilemap(8);
         Assert.assertTrue(tilemap.isCenter(60,60));
     }
 
     @Test
     public void testIsNotCenter(){
-        Tilemap tilemap = new Tilemap(0);
+        Tilemap tilemap = new Tilemap(8);
         Assert.assertFalse(tilemap.isCenter(70,70));
     }
 }
