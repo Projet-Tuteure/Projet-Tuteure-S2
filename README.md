@@ -47,7 +47,7 @@
    2. Dans les VM options, taper :
 
       1. ```shell
-         --module-path /chemin/vers/javafx/sdk/lib --add-modules javafx.controls,javafx.fxml
+         --module-path /chemin/vers/javafx/sdk/lib --add-modules javafx.controls,javafx.fxml,javafx.graphics,javafx.media
          ```
 
 8. 
