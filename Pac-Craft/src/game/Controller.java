@@ -67,6 +67,7 @@ public class Controller extends Application {
      */
     public void setLauncher(Stage stage) {
         stage.setScene(launcher.getScene(stage));
+        this.nMap=0;
     }
 
     @Override

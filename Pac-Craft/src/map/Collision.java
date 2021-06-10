@@ -4,9 +4,9 @@ import character.Entity;
 import character.Player;
 import character.Zombie;
 
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.ArrayList;
 
 public class Collision {
 
@@ -94,15 +94,17 @@ public class Collision {
     public static void collidingWithZombie(Player player, Zombie zombie) {
         if (player.isColliding(zombie) && !player.isSuperMode() && player.isKillable()) {
             //player.animationKilled(gc);
-            player.dead();
-            Timer timer = new Timer();
-            timer.schedule(new TimerTask(){
-                @Override
-                public void run() {
-                    zombie.respawn();
+            if(zombie.isAlive()) {
+                player.dead();
+                Timer timer = new Timer();
+                timer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        zombie.respawn();
 
-                }
-            },1300);
+                    }
+                }, 1300);
+            }
             return;
         }
         if (zombie.isColliding(player) && player.isSuperMode() && zombie.isKillable()) {

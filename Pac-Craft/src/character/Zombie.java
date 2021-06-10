@@ -13,7 +13,7 @@ public class Zombie extends Entity {
      * Generates a new character.Zombie
      */
     public Zombie(){
-        super("ressources/img/zombie.png",0, 0, 12,400,200, 1, 40,40, false);
+        super("ressources/img/zombie.png",0, 0, 12,400,240, 1, 40,40, false);
     }
 
     /**
